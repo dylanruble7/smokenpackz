@@ -27,12 +27,22 @@ export default function Chat() {
   // Check access permissions
   useEffect(() => {
     async function checkAccess() {
+      // Check if this is the buyer's order via localStorage (works for guests)
+      const myOrders = JSON.parse(localStorage.getItem('my_orders') || '[]')
+      const isMyOrder = myOrders.includes(orderId)
+
       if (!user) {
-        setAuthState('login')
+        // Guest user — allow if they have this orderId in localStorage
+        if (isMyOrder) {
+          setAuthState('allowed')
+        } else {
+          setAuthState('login')
+        }
         return
       }
 
       try {
+        // Check if user is staff
         const { data: staffRecord } = await supabase
           .from('staff_users')
           .select('*')
@@ -46,6 +56,7 @@ export default function Chat() {
           return
         }
 
+        // Signed in — check if this is their order
         const { data: room } = await supabase
           .from('chat_rooms')
           .select('*')
@@ -57,6 +68,12 @@ export default function Chat() {
           return
         }
 
+        // Also check localStorage (in case they placed order as guest then signed in)
+        if (isMyOrder) {
+          setAuthState('allowed')
+          return
+        }
+
         if (!room) {
           setAuthState('allowed')
           return
@@ -64,7 +81,11 @@ export default function Chat() {
 
         setAuthState('denied')
       } catch (e) {
-        setAuthState('allowed')
+        if (isMyOrder) {
+          setAuthState('allowed')
+        } else {
+          setAuthState('allowed')
+        }
       }
     }
 
