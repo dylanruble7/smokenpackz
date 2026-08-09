@@ -144,7 +144,7 @@ export default function ProductDetail() {
           <div className="card p-0">
             <div className="h-[500px] flex items-center justify-center bg-gradient-to-br from-osrs-brown/50 to-osrs-dark/50 relative overflow-hidden">
               <div className="absolute inset-0 bg-smoke animate-smoke" />
-              <div className="relative z-10 flex items-center justify-center">
+              <div className="relative z-10 w-full px-4">
                 {p.skills && Object.keys(p.skills).length > 0 ? (
                   <SkillsPanel skills={p.skills} size="lg" />
                 ) : categoryLogos[p.category] ? (
