@@ -4,11 +4,30 @@ import { ArrowLeft, Check, Copy, Leaf, MessageCircle, Clock, AlertCircle, Loader
 import { QRCodeSVG } from 'qrcode.react'
 import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useGpPrices } from '../hooks/useGpPrices.js'
 import { cryptoOptions, paymentMethods, discordUrls } from '../data/products.js'
+
+const PAYMENT_FEES = {
+  crypto: { rate: 0.02, flat: 0, label: 'Crypto network fee' },
+  card: { rate: 0.03, flat: 0.30, label: 'Card processing fee' },
+  cashapp: { rate: 0.015, flat: 0, label: 'CashApp fee' },
+  osrsgp: { rate: 0, flat: 0, label: 'No fee' },
+}
+
+function calcFee(method, total) {
+  const fee = PAYMENT_FEES[method]
+  if (!fee) return 0
+  return (total * fee.rate) + fee.flat
+}
+
+function calcTotalWithFee(method, total) {
+  return total + calcFee(method, total)
+}
 
 export default function Checkout() {
   const { cart, cartTotal, clearCart } = useCart()
   const { user } = useAuth()
+  const { prices: gpPrices, ourPrice, lowestCompetitor, updatedAt } = useGpPrices()
   const [step, setStep] = useState('details')
   const [selectedCrypto, setSelectedCrypto] = useState(null)
   const [selectedPayment, setSelectedPayment] = useState(null)
@@ -328,9 +347,10 @@ export default function Checkout() {
 
             <div className="card p-6 max-w-md mx-auto">
               <div className="flex justify-between font-medieval text-xl mb-2">
-                <span className="text-osrs-gold">Total to Pay</span>
+                <span className="text-osrs-gold">Order Total</span>
                 <span className="text-osrs-goldBright font-bold">${cartTotal}</span>
               </div>
+              <p className="text-stoner-haze/40 text-xs text-center">Processing fees calculated on next step based on payment method</p>
             </div>
           </div>
         )}
@@ -343,8 +363,22 @@ export default function Checkout() {
             <p className="text-stoner-haze/50 text-sm mb-6">Order ID: <span className="font-bold text-osrs-gold">{orderId}</span></p>
 
             <div className="bg-osrs-darker rounded-lg p-6 border border-osrs-brownLight space-y-4">
+              <div className="bg-osrs-dark/60 rounded-lg p-3 border border-osrs-brownLight/50">
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-stoner-haze/50">Order Total</span>
+                  <span className="text-stoner-haze">${cartTotal}</span>
+                </div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-stoner-haze/50">{PAYMENT_FEES.cashapp.label} (1.5%)</span>
+                  <span className="text-stoner-haze/70">+${calcFee('cashapp', cartTotal).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between font-bold pt-1 border-t border-osrs-brownLight/30">
+                  <span className="text-osrs-gold">Total to Send</span>
+                  <span className="text-osrs-goldBright text-lg">${calcTotalWithFee('cashapp', cartTotal).toFixed(2)}</span>
+                </div>
+              </div>
               <div>
-                <p className="text-stoner-haze/50 text-sm mb-2">Send <span className="text-osrs-goldBright font-bold text-lg">${cartTotal}</span> to:</p>
+                <p className="text-stoner-haze/50 text-sm mb-2">Send <span className="text-osrs-goldBright font-bold text-lg">${calcTotalWithFee('cashapp', cartTotal).toFixed(2)}</span> to:</p>
                 <div className="flex items-center justify-center gap-2">
                   <code className="px-4 py-3 rounded-lg bg-osrs-dark border border-osrs-brownLight text-osrs-goldBright text-xl font-bold">
                     $SMOKENPACKZ
@@ -364,6 +398,7 @@ export default function Checkout() {
               <div className="bg-stoner-greenDeep/20 border border-stoner-green/30 rounded-lg p-3">
                 <p className="text-stoner-haze/70 text-sm">
                   <strong className="text-stoner-greenBright">How it works:</strong> Scan the QR code or send manually to <strong className="text-osrs-goldBright">$SMOKENPACKZ</strong>.
+                  Send <strong className="text-osrs-goldBright">${calcTotalWithFee('cashapp', cartTotal).toFixed(2)}</strong> (includes 1.5% processing fee).
                   Include your order ID <strong className="text-osrs-gold">{orderId}</strong> in the note. Click "I've Paid" after sending.
                 </p>
               </div>
@@ -384,6 +419,31 @@ export default function Checkout() {
             <p className="text-stoner-haze/50 text-sm mb-6">Order ID: <span className="font-bold text-osrs-gold">{orderId}</span></p>
 
             <div className="bg-osrs-darker rounded-lg p-6 border border-osrs-brownLight space-y-4">
+              {/* GP Price Tracker */}
+              <div className="bg-osrs-dark/60 rounded-lg p-4 border border-osrs-brownLight/50">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-medieval text-sm text-osrs-goldBright">📊 Live GP Market Rates</h3>
+                  {updatedAt && <span className="text-stoner-haze/30 text-xs">Updated {updatedAt.toLocaleTimeString()}</span>}
+                </div>
+                <div className="space-y-1.5">
+                  {gpPrices.map(p => (
+                    <div key={p.competitor} className="flex justify-between items-center text-sm">
+                      <span className={p.is_us ? 'text-stoner-greenBright font-bold' : 'text-stoner-haze/60'}>
+                        {p.is_us ? '🌿 ' : ''}{p.competitor}
+                      </span>
+                      <span className={p.is_us ? 'text-stoner-greenBright font-bold' : 'text-stoner-haze/60'}>
+                        ${p.price_per_mil.toFixed(2)}/M
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                {lowestCompetitor && (
+                  <p className="text-stoner-greenBright text-xs mt-2 pt-2 border-t border-osrs-brownLight/30">
+                    ✓ We match the lowest competitor price!
+                  </p>
+                )}
+              </div>
+
               <div className="bg-stoner-greenDeep/20 border border-stoner-green/30 rounded-lg p-4">
                 <p className="text-stoner-haze/70 text-sm mb-3">
                   <strong className="text-stoner-greenBright">How it works:</strong> Place your order below, then join our Discord to arrange the GP trade.
@@ -391,14 +451,23 @@ export default function Checkout() {
                 </p>
               </div>
 
-              <div className="text-left bg-osrs-dark rounded-lg p-4 border border-osrs-brownLight">
-                <div className="flex justify-between text-sm mb-2">
+              {/* GP Calculation */}
+              <div className="text-left bg-osrs-dark rounded-lg p-4 border border-osrs-brownLight space-y-2">
+                <div className="flex justify-between text-sm">
                   <span className="text-stoner-haze/50">Order Total (USD)</span>
                   <span className="text-osrs-goldBright font-bold">${cartTotal}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-stoner-haze/50">GP Rate</span>
-                  <span className="text-stoner-haze">We'll discuss the current rate in Discord</span>
+                  <span className="text-stoner-haze/50">Our GP Rate</span>
+                  <span className="text-stoner-haze font-bold">${ourPrice.toFixed(2)}/M</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-stoner-haze/50">Processing Fee</span>
+                  <span className="text-stoner-greenBright font-bold">$0.00 (FREE)</span>
+                </div>
+                <div className="flex justify-between font-bold pt-2 border-t border-osrs-brownLight/30">
+                  <span className="text-osrs-gold">GP to Trade</span>
+                  <span className="text-osrs-goldBright text-lg">{Math.ceil(cartTotal / ourPrice).toLocaleString()}M GP</span>
                 </div>
               </div>
 
@@ -422,6 +491,20 @@ export default function Checkout() {
             <p className="text-stoner-haze/50 text-sm mb-6">Order ID: <span className="font-bold text-osrs-gold">{orderId}</span></p>
 
             <div className="bg-osrs-darker rounded-lg p-6 border border-osrs-brownLight space-y-4">
+              <div className="bg-osrs-dark/60 rounded-lg p-3 border border-osrs-brownLight/50">
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-stoner-haze/50">Order Total</span>
+                  <span className="text-stoner-haze">${cartTotal}</span>
+                </div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-stoner-haze/50">{PAYMENT_FEES.card.label} (3% + $0.30)</span>
+                  <span className="text-stoner-haze/70">+${calcFee('card', cartTotal).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between font-bold pt-1 border-t border-osrs-brownLight/30">
+                  <span className="text-osrs-gold">Total to Pay</span>
+                  <span className="text-osrs-goldBright text-lg">${calcTotalWithFee('card', cartTotal).toFixed(2)}</span>
+                </div>
+              </div>
               <div className="bg-stoner-greenDeep/20 border border-stoner-green/30 rounded-lg p-4">
                 <p className="text-stoner-haze/70 text-sm">
                   <strong className="text-stoner-greenBright">Card payments coming soon!</strong> We're working on integrating direct card payments.
@@ -455,7 +538,7 @@ export default function Checkout() {
                   <p className="text-stoner-haze/70 text-sm mb-3">{error}</p>
                   <p className="text-stoner-haze/50 text-xs mb-3">
                     If NOWPayments isn't configured yet, you can still pay manually to the wallet address below.
-                    Send the crypto equivalent of ${cartTotal}, then click "I've Paid" and confirm on Discord.
+                    Send the crypto equivalent of ${calcTotalWithFee('crypto', cartTotal).toFixed(2)} (includes 2% processing fee), then click "I've Paid" and confirm on Discord.
                   </p>
                   <div className="bg-osrs-darker rounded-lg p-4 border border-osrs-brownLight">
                     <label className="block text-stoner-haze/70 text-sm mb-1">Send {selectedCrypto.symbol} to:</label>
@@ -514,8 +597,16 @@ export default function Checkout() {
                     )}
 
                     <div className="flex justify-between text-sm">
-                      <span className="text-stoner-haze/50">USD Value:</span>
+                      <span className="text-stoner-haze/50">Order Total:</span>
                       <span className="text-stoner-haze font-bold">${cartTotal}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-stoner-haze/50">{PAYMENT_FEES.crypto.label} (2%):</span>
+                      <span className="text-stoner-haze/70">+${calcFee('crypto', cartTotal).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between font-bold pt-1 border-t border-osrs-brownLight/30">
+                      <span className="text-osrs-gold">Total USD:</span>
+                      <span className="text-osrs-goldBright">${calcTotalWithFee('crypto', cartTotal).toFixed(2)}</span>
                     </div>
 
                     {/* Live status */}
