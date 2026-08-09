@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#5c4530"/>
+      <stop offset="50%" style="stop-color:#3d2b1f"/>
+      <stop offset="100%" style="stop-color:#1a1410"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd700"/>
+      <stop offset="50%" style="stop-color:#c9a227"/>
+      <stop offset="100%" style="stop-color:#ffd700"/>
+    </linearGradient>
+    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#6bcb77"/>
+      <stop offset="100%" style="stop-color:#2d5a3d"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Shield outline -->
+  <path d="M100 15 L175 40 L175 100 Q175 150 100 185 Q25 150 25 100 L25 40 Z" 
+        fill="url(#shieldGrad)" stroke="url(#goldGrad)" stroke-width="4"/>
+  
+  <!-- Inner shield border -->
+  <path d="M100 25 L165 45 L165 100 Q165 145 100 175 Q35 145 35 100 L35 45 Z" 
+        fill="none" stroke="#c9a227" stroke-width="1.5" opacity="0.6"/>
+  
+  <!-- Cannabis leaf -->
+  <g transform="translate(100,95)" filter="url(#glow)">
+    <!-- Center stem -->
+    <line x1="0" y1="-45" x2="0" y2="45" stroke="#2d5a3d" stroke-width="2"/>
+    
+    <!-- Leaflets - 7 pointed fan leaf shape -->
+    <path d="M0,-45 Q-8,-35 -25,-25 Q-35,-15 -30,-5 Q-20,-10 -10,-15 Q-5,-20 0,-25 Q5,-20 10,-15 Q20,-10 30,-5 Q35,-15 25,-25 Q8,-35 0,-45 Z" 
+          fill="url(#leafGrad)" opacity="0.9"/>
+    
+    <!-- Lower leaflets -->
+    <path d="M0,-10 Q-15,-5 -35,5 Q-45,15 -35,25 Q-20,15 -10,10 Q-5,5 0,0 Q5,5 10,10 Q20,15 35,25 Q45,15 35,5 Q15,-5 0,-10 Z" 
+          fill="url(#leafGrad)" opacity="0.8"/>
+    
+    <!-- Bottom leaflets -->
+    <path d="M0,15 Q-10,20 -25,35 Q-30,45 -20,50 Q-10,40 -5,30 Q0,25 0,20 Q5,25 5,30 Q10,40 20,50 Q30,45 25,35 Q10,20 0,15 Z" 
+          fill="url(#leafGrad)" opacity="0.7"/>
+  </g>
+  
+  <!-- Gold trim sparkles -->
+  <circle cx="100" cy="20" r="2" fill="#ffd700" filter="url(#glow)"/>
+  <circle cx="170" cy="50" r="1.5" fill="#ffd700" opacity="0.6"/>
+  <circle cx="30" cy="50" r="1.5" fill="#ffd700" opacity="0.6"/>
+  
+  <!-- "SP" text at bottom -->
+  <text x="100" y="165" text-anchor="middle" font-family="Cinzel, serif" font-size="16" font-weight="bold" fill="url(#goldGrad)" filter="url(#glow)">SP</text>
+</svg>

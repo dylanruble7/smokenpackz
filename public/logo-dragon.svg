@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="dragonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6bcb77"/>
+      <stop offset="50%" style="stop-color:#4a7c59"/>
+      <stop offset="100%" style="stop-color:#2d5a3d"/>
+    </linearGradient>
+    <linearGradient id="goldGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd700"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+    <filter id="dragonGlow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background shield -->
+  <path d="M100 15 L175 40 L175 100 Q175 150 100 185 Q25 150 25 100 L25 40 Z" 
+        fill="#1a1410" stroke="url(#goldGrad3)" stroke-width="3"/>
+  
+  <!-- Dragon body (simplified, stylized) -->
+  <g filter="url(#dragonGlow)">
+    <!-- Dragon head -->
+    <ellipse cx="100" cy="80" rx="30" ry="25" fill="url(#dragonGrad)"/>
+    <!-- Dragon snout -->
+    <ellipse cx="100" cy="95" rx="20" ry="15" fill="url(#dragonGrad)"/>
+    <!-- Horns -->
+    <path d="M85,60 Q75,45 70,35 Q78,42 85,55 Z" fill="#c9a227"/>
+    <path d="M115,60 Q125,45 130,35 Q122,42 115,55 Z" fill="#c9a227"/>
+    <!-- Eyes -->
+    <circle cx="90" cy="75" r="4" fill="#ffd700"/>
+    <circle cx="110" cy="75" r="4" fill="#ffd700"/>
+    <circle cx="90" cy="75" r="2" fill="#1a1410"/>
+    <circle cx="110" cy="75" r="2" fill="#1a1410"/>
+    
+    <!-- Smoke from mouth (the stoner dragon) -->
+    <path d="M100,105 Q95,115 100,125 Q105,135 95,145 Q90,155 100,160" 
+          fill="none" stroke="#a8e6cf" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+    <path d="M100,105 Q108,118 103,128 Q98,138 108,148 Q113,155 103,162" 
+          fill="none" stroke="#a8e6cf" stroke-width="2.5" opacity="0.4" stroke-linecap="round"/>
+    
+    <!-- Dragon body coil -->
+    <path d="M100,100 Q70,120 60,140 Q55,155 70,160 Q90,155 100,145" 
+          fill="none" stroke="url(#dragonGrad)" stroke-width="12" stroke-linecap="round"/>
+    <path d="M100,100 Q130,120 140,140 Q145,155 130,160 Q110,155 100,145" 
+          fill="none" stroke="url(#dragonGrad)" stroke-width="12" stroke-linecap="round"/>
+    
+    <!-- Cannabis leaf on dragon's forehead -->
+    <g transform="translate(100,65) scale(0.2)" opacity="0.7">
+      <path d="M0,-45 Q-8,-35 -25,-25 Q-35,-15 -30,-5 Q-20,-10 -10,-15 Q-5,-20 0,-25 Q5,-20 10,-15 Q20,-10 30,-5 Q35,-15 25,-25 Q8,-35 0,-45 Z" 
+            fill="#6bcb77"/>
+    </g>
+  </g>
+  
+  <!-- Gold sparkles -->
+  <circle cx="50" cy="50" r="1.5" fill="#ffd700" opacity="0.6"/>
+  <circle cx="150" cy="50" r="1.5" fill="#ffd700" opacity="0.6"/>
+  <circle cx="100" cy="170" r="2" fill="#ffd700" opacity="0.5"/>
+</svg>

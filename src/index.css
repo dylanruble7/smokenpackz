@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-osrs-darker text-stoner-haze font-body;
+    background-image: radial-gradient(ellipse at top, rgba(74, 124, 89, 0.15) 0%, transparent 50%),
+                      radial-gradient(ellipse at bottom, rgba(74, 51, 115, 0.1) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 rounded-lg font-medieval font-bold text-osrs-dark bg-gold-gradient hover:scale-105 transition-transform duration-200 shadow-lg;
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-3 rounded-lg font-medieval font-bold text-stoner-haze bg-stoner-greenDeep border border-stoner-green hover:bg-stoner-green transition-colors duration-200;
+  }
+
+  .btn-crypto {
+    @apply px-6 py-3 rounded-lg font-medieval font-bold text-white bg-gradient-to-r from-orange-500 to-yellow-500 hover:scale-105 transition-transform duration-200 shadow-lg;
+  }
+
+  .card {
+    @apply bg-osrs-dark/80 backdrop-blur-sm border border-osrs-brownLight rounded-xl overflow-hidden hover:border-osrs-gold transition-all duration-300;
+  }
+
+  .card:hover {
+    @apply shadow-[0_0_20px_rgba(201,162,39,0.3)] scale-[1.02];
+  }
+
+  .section-title {
+    @apply font-medieval text-3xl md:text-4xl font-bold text-osrs-goldBright;
+  }
+
+  .pixel-text {
+    @apply font-osrs text-xs leading-relaxed;
+  }
+
+  .nav-link {
+    @apply font-medieval text-stoner-haze hover:text-osrs-goldBright transition-colors duration-200 cursor-pointer;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0d0a08;
+}
+::-webkit-scrollbar-thumb {
+  background: #3d2b1f;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5c4530;
+}
+
+/* Smoke effect background */
+.smoke-bg::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at 20% 30%, rgba(107, 203, 119, 0.05) 0%, transparent 40%),
+              radial-gradient(ellipse at 80% 70%, rgba(123, 92, 191, 0.05) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+}
