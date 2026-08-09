@@ -65,49 +65,46 @@ export default function Home() {
       </section>
 
       {/* Sponsors */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-        <div className="text-center mb-10">
-          <Crown className="w-10 h-10 text-osrs-goldBright mx-auto mb-3" />
-          <h2 className="section-title">Our Sponsors</h2>
-          <p className="text-stoner-haze/50 text-sm mt-2 max-w-xl mx-auto">
-            Support the businesses that support the pack. Check out our sponsors' communities and services.
-          </p>
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        <div className="flex items-center gap-3 mb-4">
+          <Crown className="w-6 h-6 text-osrs-goldBright flex-shrink-0" />
+          <h2 className="font-medieval text-xl font-bold text-osrs-goldBright">Our Sponsors</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4">
           {sponsors.map(sponsor => (
-            <div key={sponsor.id} className="card overflow-hidden group">
+            <div key={sponsor.id} className="card overflow-hidden group flex flex-col sm:flex-row">
               {/* Banner */}
               {sponsor.banner && sponsor.bannerType === 'video' ? (
-                <div className="w-full bg-black overflow-hidden">
-                  <video src={sponsor.banner} autoPlay loop muted playsInline className="w-full h-auto block group-hover:scale-105 transition-transform" />
+                <div className="sm:w-1/2 bg-black overflow-hidden flex-shrink-0">
+                  <video src={sponsor.banner} autoPlay loop muted playsInline className="w-full h-auto max-h-[160px] object-cover block group-hover:scale-105 transition-transform" />
                 </div>
               ) : (
-                <div className="h-40 bg-gradient-to-br from-osrs-brown/40 to-osrs-dark/60 flex items-center justify-center overflow-hidden">
+                <div className="sm:w-1/3 h-32 bg-gradient-to-br from-osrs-brown/40 to-osrs-dark/60 flex items-center justify-center overflow-hidden flex-shrink-0">
                   {sponsor.banner ? (
                     <img src={sponsor.banner} alt={sponsor.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                   ) : (
                     <div className="text-center">
-                      <Crown className="w-10 h-10 text-osrs-gold/40 mx-auto mb-1" />
-                      <span className="text-stoner-haze/30 text-sm">Banner Available</span>
+                      <Crown className="w-8 h-8 text-osrs-gold/40 mx-auto mb-1" />
+                      <span className="text-stoner-haze/30 text-xs">Banner Available</span>
                     </div>
                   )}
                 </div>
               )}
               {/* Info */}
-              <div className="p-5">
-                <h3 className="font-medieval text-lg font-bold text-osrs-goldBright mb-2">{sponsor.name}</h3>
-                <p className="text-stoner-haze/60 text-sm mb-4">{sponsor.description}</p>
-                <div className="flex gap-3">
+              <div className="p-4 flex-1 flex flex-col justify-center">
+                <h3 className="font-medieval text-base font-bold text-osrs-goldBright mb-1">{sponsor.name}</h3>
+                <p className="text-stoner-haze/60 text-xs mb-3 line-clamp-2">{sponsor.description}</p>
+                <div className="flex gap-2">
                   {sponsor.discord && (
                     <a href={sponsor.discord} target="_blank" rel="noopener noreferrer"
-                       className="btn-secondary inline-flex items-center gap-2 text-sm py-2 px-4">
-                      <MessageCircle className="w-4 h-4 text-[#5865F2]" /> Discord
+                       className="btn-secondary inline-flex items-center gap-1 text-xs py-1.5 px-3">
+                      <MessageCircle className="w-3 h-3 text-[#5865F2]" /> Discord
                     </a>
                   )}
                   {sponsor.website && (
                     <a href={sponsor.website} target="_blank" rel="noopener noreferrer"
-                       className="btn-secondary inline-flex items-center gap-2 text-sm py-2 px-4">
-                      <ExternalLink className="w-4 h-4" /> Website
+                       className="btn-secondary inline-flex items-center gap-1 text-xs py-1.5 px-3">
+                      <ExternalLink className="w-3 h-3" /> Visit
                     </a>
                   )}
                 </div>
