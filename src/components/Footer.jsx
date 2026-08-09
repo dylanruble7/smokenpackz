@@ -55,6 +55,11 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Triple image */}
+        <div className="flex justify-center mt-8">
+          <img src="/triple.png" alt="Triple" className="max-w-full object-contain" />
+        </div>
+
         <div className="border-t border-osrs-brownLight mt-8 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-stoner-haze/40 text-xs">
             © 2025 SmokenPackz. Not affiliated with Jagex. OSRS is a trademark of Jagex Ltd.
