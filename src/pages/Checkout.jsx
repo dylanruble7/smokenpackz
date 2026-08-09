@@ -5,6 +5,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useGpPrices } from '../hooks/useGpPrices.js'
+import { sendOrderNotification } from '../lib/notify.js'
 import { cryptoOptions, paymentMethods, discordUrls } from '../data/products.js'
 
 const PAYMENT_FEES = {
@@ -144,6 +145,10 @@ export default function Checkout() {
 
   const handleComplete = () => {
     if (pollRef.current) clearInterval(pollRef.current)
+    sendOrderNotification({
+      orderId, paymentMethod: selectedPayment || 'crypto',
+      cartTotal, items: cart, rsn: orderInfo.rsn, email: orderInfo.email, user,
+    })
     clearCart()
     setStep('success')
   }
@@ -163,6 +168,10 @@ export default function Checkout() {
   }
 
   const handleGoToChat = () => {
+    sendOrderNotification({
+      orderId, paymentMethod: 'osrsgp',
+      cartTotal, items: cart, rsn: orderInfo.rsn, email: orderInfo.email, user,
+    })
     clearCart()
     navigate(`/chat/${orderId}`)
   }
