@@ -141,22 +141,11 @@ export default function ProductDetail() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Image */}
           <div className="card p-0">
-            <div className="h-80 flex items-center justify-center bg-gradient-to-br from-osrs-brown/50 to-osrs-dark/50 relative overflow-hidden">
+            <div className="h-[500px] flex items-center justify-center bg-gradient-to-br from-osrs-brown/50 to-osrs-dark/50 relative overflow-hidden">
               <div className="absolute inset-0 bg-smoke animate-smoke" />
               <div className="relative z-10 flex items-center justify-center">
                 {p.skills && Object.keys(p.skills).length > 0 ? (
-                  <div className="relative">
-                    <img src="/osrs-skills.webp" alt={p.name} className="h-72 object-contain" />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center pt-4">
-                      <div className="grid grid-cols-3 gap-x-6 gap-y-0.5 text-sm font-bold" style={{ textShadow: '1px 1px 2px black' }}>
-                        {OSRS_SKILLS.map(skill => {
-                          const level = p.skills[skill.name]
-                          if (!level) return <div key={skill.name} className="w-10 text-center opacity-0">--</div>
-                          return <div key={skill.name} className="w-10 text-center text-yellow-300">{level}</div>
-                        })}
-                      </div>
-                    </div>
-                  </div>
+                  <img src="/osrs-skills.webp" alt={p.name} className="h-[480px] object-contain" />
                 ) : categoryLogos[p.category] ? (
                   <img src={categoryLogos[p.category]} alt={p.name} className="w-72 h-72 object-contain" />
                 ) : (
