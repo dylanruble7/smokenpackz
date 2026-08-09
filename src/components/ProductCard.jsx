@@ -29,7 +29,7 @@ export default function ProductCard({ product }) {
       <div className="relative h-80 flex items-center justify-center bg-gradient-to-br from-osrs-brown/50 to-osrs-dark/50 overflow-hidden">
         <div className="absolute inset-0 bg-smoke animate-smoke" />
         {hasSkills ? (
-          <div className="relative z-10 p-2">
+          <div className="relative z-10">
             <SkillsPanel skills={product.skills} size="sm" />
           </div>
         ) : logo ? (
