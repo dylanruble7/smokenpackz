@@ -78,8 +78,8 @@ export default function Home() {
             <div key={sponsor.id} className="card overflow-hidden group">
               {/* Banner */}
               {sponsor.banner && sponsor.bannerType === 'video' ? (
-                <div className="w-full bg-black flex items-center justify-center overflow-hidden">
-                  <video src={sponsor.banner} autoPlay loop muted playsInline className="w-full max-h-[300px] object-contain group-hover:scale-105 transition-transform" />
+                <div className="w-full bg-black overflow-hidden">
+                  <video src={sponsor.banner} autoPlay loop muted playsInline className="w-full h-auto block group-hover:scale-105 transition-transform" />
                 </div>
               ) : (
                 <div className="h-40 bg-gradient-to-br from-osrs-brown/40 to-osrs-dark/60 flex items-center justify-center overflow-hidden">
