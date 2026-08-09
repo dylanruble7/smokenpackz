@@ -1,15 +1,29 @@
 import { useSearchParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { products } from '../data/products.js'
+import { supabase } from '../lib/supabase.js'
 import ProductCard from '../components/ProductCard.jsx'
+
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams()
   const cat = searchParams.get('cat') || 'all'
   const [filter, setFilter] = useState(cat)
+  const [customAccounts, setCustomAccounts] = useState([])
 
   useEffect(() => {
     setFilter(cat)
   }, [cat])
+
+  useEffect(() => {
+    async function loadAccounts() {
+      const { data } = await supabase
+        .from('custom_accounts')
+        .select('*')
+        .order('created_at', { ascending: false })
+      if (data) setCustomAccounts(data)
+    }
+    loadAccounts()
+  }, [])
 
   const setCategory = (c) => {
     if (c === 'all') {
@@ -19,7 +33,23 @@ export default function Shop() {
     }
   }
 
-  const filtered = filter === 'all' ? products : products.filter(p => p.category === filter)
+  const accountProducts = customAccounts.map(acc => ({
+    id: acc.id,
+    category: 'accounts',
+    name: acc.name,
+    price: parseFloat(acc.price),
+    image: '/osrs-skills.webp',
+    tag: acc.tag || '',
+    tagColor: acc.tag_color || '',
+    description: acc.description || '',
+    stats: {},
+    skills: acc.skills || {},
+    badges: acc.badges || [],
+    stock: acc.stock || 1,
+  }))
+
+  const allProducts = [...accountProducts, ...products]
+  const filtered = filter === 'all' ? allProducts : allProducts.filter(p => p.category === filter)
 
   const tabs = [
     { id: 'all', label: 'All Products', icon: null, img: null },
