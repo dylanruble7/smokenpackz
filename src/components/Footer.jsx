@@ -8,9 +8,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center gap-1 mb-4">
+            <div className="flex items-center gap-0 mb-4">
               <img src="/packzlogo.png" alt="SmokenPackz" className="w-60 h-60 object-contain" />
-              <span className="font-medieval text-lg font-bold text-osrs-goldBright">SmokenPackz</span>
+              <span className="font-medieval text-2xl font-bold text-osrs-goldBright ml-1">SmokenPackz</span>
             </div>
             <p className="text-stoner-haze/60 text-sm max-w-md">
               Premium OSRS accounts and gold. Hand-trained, fairly priced, and delivered with chill vibes.
