@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { ShoppingCart, Check } from 'lucide-react'
 import { useState } from 'react'
 import { useCart } from '../context/CartContext.jsx'
-import { OSRS_SKILLS } from '../data/skills.js'
+import SkillsPanel from './SkillsPanel.jsx'
 
 const categoryLogos = {
   accounts: '/packzaccs.png',
@@ -29,7 +29,9 @@ export default function ProductCard({ product }) {
       <div className="relative h-80 flex items-center justify-center bg-gradient-to-br from-osrs-brown/50 to-osrs-dark/50 overflow-hidden">
         <div className="absolute inset-0 bg-smoke animate-smoke" />
         {hasSkills ? (
-          <img src="/osrs-skills.webp" alt={product.name} className="h-76 object-contain group-hover:scale-110 transition-transform duration-300 relative z-10" />
+          <div className="relative z-10 p-2">
+            <SkillsPanel skills={product.skills} size="sm" />
+          </div>
         ) : logo ? (
           <img src={logo} alt={product.name} className="w-52 h-52 object-contain group-hover:scale-110 transition-transform duration-300 relative z-10" />
         ) : (
