@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { ShoppingCart, Check } from 'lucide-react'
 import { useState } from 'react'
 import { useCart } from '../context/CartContext.jsx'
+import { OSRS_SKILLS } from '../data/skills.js'
 
 const categoryLogos = {
   accounts: '/packzaccs.png',
@@ -20,13 +21,32 @@ export default function ProductCard({ product }) {
   }
 
   const logo = categoryLogos[product.category]
+  const hasSkills = product.skills && Object.keys(product.skills).length > 0
 
   return (
     <Link to={`/product/${product.id}`} className="card group flex flex-col cursor-pointer">
       {/* Image / Icon area */}
       <div className="relative h-52 flex items-center justify-center bg-gradient-to-br from-osrs-brown/50 to-osrs-dark/50 overflow-hidden">
         <div className="absolute inset-0 bg-smoke animate-smoke" />
-        {logo ? (
+        {hasSkills ? (
+          <div className="relative z-10 w-full h-full flex items-center justify-center">
+            <img src="/osrs-skills.webp" alt={product.name} className="h-48 object-contain group-hover:scale-110 transition-transform duration-300" />
+            {/* Skill level overlays */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pt-2">
+              <div className="grid grid-cols-3 gap-x-4 gap-y-0.5 text-xs font-bold text-white" style={{ textShadow: '1px 1px 2px black' }}>
+                {OSRS_SKILLS.map(skill => {
+                  const level = product.skills[skill.name]
+                  if (!level) return <div key={skill.name} className="w-8 text-center opacity-0">--</div>
+                  return (
+                    <div key={skill.name} className="w-8 text-center text-yellow-300">
+                      {level}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        ) : logo ? (
           <img src={logo} alt={product.name} className="w-52 h-52 object-contain group-hover:scale-110 transition-transform duration-300 relative z-10" />
         ) : (
           <span className="text-6xl group-hover:scale-110 transition-transform duration-300 relative z-10">

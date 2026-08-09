@@ -2,6 +2,8 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, ShoppingCart, Check, Shield, Zap, MessageCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { products, discordUrls } from '../data/products.js'
+import { OSRS_SKILLS } from '../data/skills.js'
+import { supabase } from '../lib/supabase.js'
 import { useCart } from '../context/CartContext.jsx'
 
 const categoryLogos = {
@@ -17,8 +19,34 @@ export default function ProductDetail() {
   const [added, setAdded] = useState(false)
   const [bondQty, setBondQty] = useState(1)
   const [inputValue, setInputValue] = useState('1')
+  const [customAccount, setCustomAccount] = useState(null)
 
   const product = products.find(p => p.id === id)
+
+  // Load custom account from Supabase if not in static products
+  useEffect(() => {
+    if (!product) {
+      supabase.from('custom_accounts').select('*').eq('id', id).single()
+        .then(({ data }) => {
+          if (data) {
+            setCustomAccount({
+              id: data.id,
+              category: 'accounts',
+              name: data.name,
+              price: parseFloat(data.price),
+              image: '/osrs-skills.webp',
+              tag: data.tag || '',
+              tagColor: data.tag_color || '',
+              description: data.description || '',
+              stats: {},
+              skills: data.skills || {},
+              badges: data.badges || [],
+              stock: data.stock || 1,
+            })
+          }
+        })
+    }
+  }, [id, product])
 
   // Adjust defaults based on product type
   useEffect(() => {
@@ -31,19 +59,21 @@ export default function ProductDetail() {
     }
   }, [product])
 
-  if (!product) {
+  if (!product && !customAccount) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-stoner-haze/60 text-xl mb-4">Product not found 😔</p>
+          <p className="text-stoner-haze/60 text-xl mb-4">Product not found</p>
           <Link to="/shop" className="btn-primary">Back to Shop</Link>
         </div>
       </div>
     )
   }
 
-  const isGold = product?.id === 'gold-custom'
-  const isBond = product?.id === 'bond-custom'
+  const p = product || customAccount
+
+  const isGold = p?.id === 'gold-custom'
+  const isBond = p?.id === 'bond-custom'
   const unitLabel = isGold ? 'M GP' : 'Bond'
   const minQty = isGold ? 5 : 1
 
@@ -62,10 +92,10 @@ export default function ProductDetail() {
   const basePrice = isGold ? 0.27 : 4.25
   const getValidQty = () => Math.max(minQty, Math.min(99999, bondQty))
   const validQty = getValidQty()
-  const customTotal = product?.customQuantity ? unitPrice(validQty) * validQty : product?.price
+  const customTotal = p?.customQuantity ? unitPrice(validQty) * validQty : p?.price
 
   const handleAdd = () => {
-    if (product.customQuantity) {
+    if (p.customQuantity) {
       const qty = getValidQty()
       const customName = isGold
         ? `${qty}M OSRS Gold - Custom Order`
@@ -73,16 +103,16 @@ export default function ProductDetail() {
       const customStats = isGold
         ? { ...product.stats, 'Amount': `${qty}M GP`, 'Price per 1M': `$${unitPrice(qty).toFixed(2)}` }
         : { ...product.stats, 'Amount': `${qty} Bonds`, 'Membership': `${qty * 14} days`, 'Price per Bond': `$${unitPrice(qty).toFixed(2)}` }
-      addToCart({ ...product, price: unitPrice(qty), name: customName, stats: customStats }, qty)
+      addToCart({ ...p, price: unitPrice(qty), name: customName, stats: customStats }, qty)
     } else {
-      addToCart(product)
+      addToCart(p)
     }
     setAdded(true)
     setTimeout(() => setAdded(false), 1500)
   }
 
   const handleBuyNow = () => {
-    if (product.customQuantity) {
+    if (p.customQuantity) {
       const qty = getValidQty()
       const customName = isGold
         ? `${qty}M OSRS Gold - Custom Order`
@@ -90,9 +120,9 @@ export default function ProductDetail() {
       const customStats = isGold
         ? { ...product.stats, 'Amount': `${qty}M GP`, 'Price per 1M': `$${unitPrice(qty).toFixed(2)}` }
         : { ...product.stats, 'Amount': `${qty} Bonds`, 'Membership': `${qty * 14} days`, 'Price per Bond': `$${unitPrice(qty).toFixed(2)}` }
-      addToCart({ ...product, price: unitPrice(qty), name: customName, stats: customStats }, qty)
+      addToCart({ ...p, price: unitPrice(qty), name: customName, stats: customStats }, qty)
     } else {
-      addToCart(product)
+      addToCart(p)
     }
     navigate('/checkout')
   }
@@ -110,15 +140,28 @@ export default function ProductDetail() {
             <div className="h-80 flex items-center justify-center bg-gradient-to-br from-osrs-brown/50 to-osrs-dark/50 relative overflow-hidden">
               <div className="absolute inset-0 bg-smoke animate-smoke" />
               <div className="relative z-10 flex items-center justify-center">
-                {categoryLogos[product.category] ? (
-                  <img src={categoryLogos[product.category]} alt={product.name} className="w-72 h-72 object-contain" />
+                {p.skills && Object.keys(p.skills).length > 0 ? (
+                  <div className="relative">
+                    <img src="/osrs-skills.webp" alt={p.name} className="h-72 object-contain" />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center pt-4">
+                      <div className="grid grid-cols-3 gap-x-6 gap-y-0.5 text-sm font-bold" style={{ textShadow: '1px 1px 2px black' }}>
+                        {OSRS_SKILLS.map(skill => {
+                          const level = p.skills[skill.name]
+                          if (!level) return <div key={skill.name} className="w-10 text-center opacity-0">--</div>
+                          return <div key={skill.name} className="w-10 text-center text-yellow-300">{level}</div>
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                ) : categoryLogos[p.category] ? (
+                  <img src={categoryLogos[p.category]} alt={p.name} className="w-72 h-72 object-contain" />
                 ) : (
-                  <span className="text-9xl">{product.image}</span>
+                  <span className="text-9xl">{p.image}</span>
                 )}
               </div>
-              {product.tag && (
-                <span className={`absolute top-4 right-4 px-3 py-1 rounded text-sm font-bold text-osrs-dark bg-${product.tagColor}`}>
-                  {product.tag}
+              {p.tag && (
+                <span className={`absolute top-4 right-4 px-3 py-1 rounded text-sm font-bold text-osrs-dark bg-${p.tagColor}`}>
+                  {p.tag}
                 </span>
               )}
             </div>
@@ -126,25 +169,46 @@ export default function ProductDetail() {
 
           {/* Details */}
           <div className="flex flex-col">
-            <h1 className="font-medieval text-3xl font-bold text-osrs-goldBright mb-2">{product.name}</h1>
-            <p className="text-stoner-haze/70 text-lg mb-6">{product.description}</p>
+            <h1 className="font-medieval text-3xl font-bold text-osrs-goldBright mb-2">{p.name}</h1>
+            <p className="text-stoner-haze/70 text-lg mb-6">{p.description}</p>
+
+            {/* Skills grid for accounts */}
+            {p.skills && Object.keys(p.skills).length > 0 && (
+              <div className="bg-osrs-dark/60 rounded-lg p-4 mb-6 border border-osrs-brownLight">
+                <h3 className="font-medieval text-osrs-gold mb-3 text-sm">Skill Levels</h3>
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                  {OSRS_SKILLS.map(skill => {
+                    const level = p.skills[skill.name]
+                    if (!level) return null
+                    return (
+                      <div key={skill.name} className="flex items-center justify-between text-sm bg-osrs-darker/60 rounded px-2 py-1">
+                        <span className="text-stoner-haze/60 flex items-center gap-1">{skill.icon} {skill.short}</span>
+                        <span className="text-osrs-goldBright font-bold">{level}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Stats */}
-            <div className="bg-osrs-dark/60 rounded-lg p-4 mb-6 border border-osrs-brownLight">
-              <h3 className="font-medieval text-osrs-gold mb-3 text-sm">Stats & Details</h3>
-              <div className="grid grid-cols-2 gap-2">
-                {Object.entries(product.stats).map(([key, value]) => (
-                  <div key={key} className="flex justify-between text-sm">
-                    <span className="text-stoner-haze/50">{key}:</span>
-                    <span className="text-stoner-haze font-bold">{value}</span>
-                  </div>
-                ))}
+            {Object.keys(p.stats).length > 0 && (
+              <div className="bg-osrs-dark/60 rounded-lg p-4 mb-6 border border-osrs-brownLight">
+                <h3 className="font-medieval text-osrs-gold mb-3 text-sm">Stats & Details</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {Object.entries(p.stats).map(([key, value]) => (
+                    <div key={key} className="flex justify-between text-sm">
+                      <span className="text-stoner-haze/50">{key}:</span>
+                      <span className="text-stoner-haze font-bold">{value}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Badges */}
             <div className="flex flex-wrap gap-2 mb-6">
-              {product.badges.map(badge => (
+              {p.badges.map(badge => (
                 <span key={badge} className="text-xs px-3 py-1 rounded-full bg-stoner-greenDeep/50 text-stoner-haze/80 border border-stoner-green/30">
                   ✓ {badge}
                 </span>
@@ -153,7 +217,7 @@ export default function ProductDetail() {
 
             {/* Price + actions */}
             <div className="mt-auto">
-              {product.customQuantity && (
+              {p.customQuantity && (
                 <div className="mb-6 rounded-xl overflow-hidden border border-osrs-brownLight">
                   {/* Header bar */}
                   <div className="bg-gradient-to-r from-osrs-brown/60 to-osrs-dark/80 px-5 py-3 border-b border-osrs-brownLight">
@@ -259,9 +323,9 @@ export default function ProductDetail() {
                   </div>
                 </div>
               )}
-              {!product.customQuantity && (
+              {!p.customQuantity && (
                 <div className="flex items-baseline gap-2 mb-4">
-                  <span className="font-medieval text-4xl font-bold text-osrs-gold">${product.price}</span>
+                  <span className="font-medieval text-4xl font-bold text-osrs-gold">${p.price}</span>
                   <span className="text-stoner-haze/40 text-sm">Crypto, CashApp & OSRS GP accepted</span>
                 </div>
               )}
