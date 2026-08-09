@@ -3,6 +3,7 @@ import { ArrowLeft, ShoppingCart, Check, Shield, Zap, MessageCircle } from 'luci
 import { useState, useEffect } from 'react'
 import { products, discordUrls } from '../data/products.js'
 import { OSRS_SKILLS } from '../data/skills.js'
+import SkillsPanel from '../components/SkillsPanel.jsx'
 import { supabase } from '../lib/supabase.js'
 import { useCart } from '../context/CartContext.jsx'
 
@@ -145,7 +146,7 @@ export default function ProductDetail() {
               <div className="absolute inset-0 bg-smoke animate-smoke" />
               <div className="relative z-10 flex items-center justify-center">
                 {p.skills && Object.keys(p.skills).length > 0 ? (
-                  <img src="/osrs-skills.webp" alt={p.name} className="h-[480px] object-contain" />
+                  <SkillsPanel skills={p.skills} size="lg" />
                 ) : categoryLogos[p.category] ? (
                   <img src={categoryLogos[p.category]} alt={p.name} className="w-72 h-72 object-contain" />
                 ) : (
