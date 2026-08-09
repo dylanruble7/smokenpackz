@@ -53,11 +53,11 @@ export default function Footer() {
               <li className="flex items-center gap-2"><MessageCircle className="w-4 h-4 text-[#5865F2]" /> 24/7 Discord Support</li>
             </ul>
           </div>
-        </div>
 
-        {/* Triple image */}
-        <div className="flex justify-center mt-8">
-          <img src="/triple.png" alt="Triple" className="max-w-[50%] object-contain" />
+          {/* Triple image - fills rest of row next to Why Us */}
+          <div className="col-span-3 flex items-center justify-center">
+            <img src="/triple.png" alt="Triple" className="max-w-full max-h-48 object-contain" />
+          </div>
         </div>
 
         <div className="border-t border-osrs-brownLight mt-8 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
