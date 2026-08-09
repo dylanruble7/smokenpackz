@@ -1,12 +1,14 @@
 import { Link, useLocation } from 'react-router-dom'
-import { ShoppingCart, Menu, X } from 'lucide-react'
+import { ShoppingCart, Menu, X, User, LogOut } from 'lucide-react'
 import { useState } from 'react'
 import { useCart } from '../context/CartContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 import { discordUrls } from '../data/products.js'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const { cartCount } = useCart()
+  const { user, signOut } = useAuth()
   const location = useLocation()
 
   const links = [
@@ -44,10 +46,31 @@ export default function Navbar() {
                 Discord {i + 1}
               </a>
             ))}
+            {user ? (
+              <Link to="/account" className="nav-link flex items-center gap-1 text-osrs-goldBright">
+                <User className="w-4 h-4" /> Account
+              </Link>
+            ) : (
+              <Link to="/auth" className="nav-link flex items-center gap-1">
+                <User className="w-4 h-4" /> Sign In
+              </Link>
+            )}
           </div>
 
-          {/* Cart + mobile toggle */}
+          {/* Cart + auth + mobile toggle */}
           <div className="flex items-center gap-4">
+            {user ? (
+              <Link to="/account" className="flex items-center gap-2 group">
+                <div className="w-8 h-8 rounded-full bg-gold-gradient flex items-center justify-center text-osrs-dark font-bold text-sm">
+                  {user.email?.charAt(0).toUpperCase()}
+                </div>
+                <span className="hidden sm:inline text-stoner-haze/60 text-sm group-hover:text-osrs-goldBright transition-colors">Account</span>
+              </Link>
+            ) : (
+              <Link to="/auth" className="flex items-center gap-1 text-stoner-haze hover:text-osrs-goldBright transition-colors text-sm font-bold">
+                <User className="w-5 h-5" /> <span className="hidden sm:inline">Sign In</span>
+              </Link>
+            )}
             <Link to="/cart" className="relative">
               <ShoppingCart className="w-6 h-6 text-stoner-haze hover:text-osrs-goldBright transition-colors" />
               {cartCount > 0 && (
@@ -80,6 +103,15 @@ export default function Navbar() {
                 Discord Server {i + 1}
               </a>
             ))}
+            {user ? (
+              <Link to="/account" onClick={() => setOpen(false)} className="nav-link py-2 flex items-center gap-1 text-osrs-goldBright">
+                <User className="w-4 h-4" /> My Account
+              </Link>
+            ) : (
+              <Link to="/auth" onClick={() => setOpen(false)} className="nav-link py-2 flex items-center gap-1">
+                <User className="w-4 h-4" /> Sign In / Sign Up
+              </Link>
+            )}
           </div>
         )}
       </div>
