@@ -143,56 +143,108 @@ export default function ProductDetail() {
             {/* Price + actions */}
             <div className="mt-auto">
               {product.customQuantity && (
-                <div className="mb-6 bg-osrs-dark/60 rounded-lg p-5 border border-osrs-brownLight">
-                  <h3 className="font-medieval text-osrs-gold mb-3 text-sm">Choose Quantity {isGold && '(in millions)'}</h3>
-                  <div className="flex items-center gap-3 mb-3">
-                    <button
-                      onClick={() => setBondQty(Math.max(minQty, bondQty - 1))}
-                      className="w-10 h-10 rounded-lg bg-osrs-dark border border-osrs-brownLight text-osrs-goldBright font-bold text-xl hover:border-osrs-gold transition-colors"
-                    >−</button>
-                    <input
-                      type="number"
-                      min={minQty}
-                      max="99999"
-                      value={bondQty}
-                      onChange={e => setBondQty(Math.max(minQty, Math.min(99999, parseInt(e.target.value) || minQty)))}
-                      className="w-24 text-center bg-osrs-dark border border-osrs-brownLight rounded-lg text-stoner-haze text-lg font-bold py-2"
-                    />
-                    <button
-                      onClick={() => setBondQty(Math.min(99999, bondQty + 1))}
-                      className="w-10 h-10 rounded-lg bg-osrs-dark border border-osrs-brownLight text-osrs-goldBright font-bold text-xl hover:border-osrs-gold transition-colors"
-                    >+</button>
-                    <span className="text-stoner-haze/40 text-sm">{unitLabel}{isGold ? ' minimum' : ''}</span>
+                <div className="mb-6 rounded-xl overflow-hidden border border-osrs-brownLight">
+                  {/* Header bar */}
+                  <div className="bg-gradient-to-r from-osrs-brown/60 to-osrs-dark/80 px-5 py-3 border-b border-osrs-brownLight">
+                    <h3 className="font-medieval text-osrs-goldBright text-lg flex items-center gap-2">
+                      {isGold ? '🪙 Choose Your Gold Amount' : '🎯 Choose Your Bond Amount'}
+                    </h3>
                   </div>
-                  <div className="text-sm space-y-1">
-                    <div className="flex justify-between">
-                      <span className="text-stoner-haze/50">Price per {unitLabel}:</span>
-                      <span className="text-osrs-goldBright font-bold">${unitPrice(bondQty).toFixed(2)}</span>
+
+                  <div className="bg-osrs-dark/70 p-5 space-y-4">
+                    {/* Big input with label */}
+                    <div>
+                      <label className="text-stoner-haze/50 text-xs uppercase tracking-wider mb-2 block">
+                        {isGold ? 'Amount (in millions)' : 'Number of Bonds'}
+                      </label>
+                      <div className="flex items-stretch gap-0">
+                        <button
+                          onClick={() => setBondQty(Math.max(minQty, bondQty - (isGold ? 5 : 1)))}
+                          className="px-5 rounded-l-lg bg-osrs-dark border border-osrs-brownLight border-r-0 text-osrs-goldBright font-bold text-2xl hover:bg-osrs-brown/40 hover:border-osrs-gold transition-all"
+                        >−</button>
+                        <input
+                          type="number"
+                          min={minQty}
+                          max="99999"
+                          value={bondQty}
+                          onChange={e => setBondQty(Math.max(minQty, Math.min(99999, parseInt(e.target.value) || minQty)))}
+                          className="flex-1 text-center bg-osrs-dark border-y border-osrs-brownLight text-stoner-haze text-3xl font-bold py-3 focus:outline-none focus:border-osrs-gold transition-colors"
+                        />
+                        <button
+                          onClick={() => setBondQty(Math.min(99999, bondQty + (isGold ? 5 : 1)))}
+                          className="px-5 rounded-r-lg bg-osrs-dark border border-osrs-brownLight border-l-0 text-osrs-goldBright font-bold text-2xl hover:bg-osrs-brown/40 hover:border-osrs-gold transition-all"
+                        >+</button>
+                      </div>
+                      <div className="flex items-center justify-between mt-1 px-1">
+                        <span className="text-stoner-haze/30 text-xs">Min: {minQty}{isGold ? 'M' : ''}</span>
+                        <span className="text-stoner-haze/30 text-xs">Max: 99,999{isGold ? 'M' : ''}</span>
+                      </div>
                     </div>
-                    {isBond && (
-                      <div className="flex justify-between">
-                        <span className="text-stoner-haze/50">Membership:</span>
-                        <span className="text-stoner-haze font-bold">{bondQty * 14} days</span>
+
+                    {/* Quick select buttons */}
+                    <div>
+                      <label className="text-stoner-haze/50 text-xs uppercase tracking-wider mb-2 block">Quick Select</label>
+                      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                        {(isGold ? [5, 10, 50, 100, 500, 1000] : [1, 5, 10, 25, 50, 100]).map(qty => (
+                          <button
+                            key={qty}
+                            onClick={() => setBondQty(qty)}
+                            className={`py-2.5 rounded-lg font-bold text-sm transition-all ${
+                              bondQty === qty
+                                ? 'bg-gold-gradient text-osrs-dark scale-105'
+                                : 'bg-osrs-dark border border-osrs-brownLight text-stoner-haze hover:border-osrs-gold hover:text-osrs-goldBright'
+                            }`}
+                          >
+                            {isGold ? `${qty}M` : qty}
+                          </button>
+                        ))}
                       </div>
-                    )}
-                    {isGold && (
-                      <div className="flex justify-between">
-                        <span className="text-stoner-haze/50">Total gold:</span>
-                        <span className="text-stoner-haze font-bold">{bondQty}M GP</span>
+                    </div>
+
+                    {/* Price breakdown card */}
+                    <div className="bg-osrs-darker/80 rounded-lg p-4 border border-osrs-brownLight/50 space-y-2">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-stoner-haze/50">Price per {unitLabel}</span>
+                        <span className="text-osrs-goldBright font-bold text-base">${unitPrice(bondQty).toFixed(2)}</span>
                       </div>
-                    )}
-                    {bondQty >= (isGold ? 50 : 5) && (
-                      <div className="text-stoner-greenBright text-xs pt-1">
-                        ✓ Bulk discount applied! Save ${(basePrice - unitPrice(bondQty)).toFixed(2)} per {unitLabel}
+                      {isGold && (
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-stoner-haze/50">Total Gold</span>
+                          <span className="text-stoner-haze font-bold">{bondQty.toLocaleString()}M GP</span>
+                        </div>
+                      )}
+                      {isBond && (
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-stoner-haze/50">Total Membership</span>
+                          <span className="text-stoner-haze font-bold">{bondQty * 14} days ({Math.floor(bondQty * 14 / 30)} months)</span>
+                        </div>
+                      )}
+                      {bondQty >= (isGold ? 50 : 5) && (
+                        <div className="flex justify-between items-center text-sm pt-1 border-t border-osrs-brownLight/30">
+                          <span className="text-stoner-greenBright flex items-center gap-1">
+                            ✓ Bulk Discount
+                          </span>
+                          <span className="text-stoner-greenBright font-bold">
+                            Save ${(basePrice - unitPrice(bondQty)).toFixed(2)}/{unitLabel}
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center pt-2 border-t border-osrs-brownLight/30">
+                        <span className="text-stoner-haze font-medieval text-lg">Total</span>
+                        <span className="font-medieval text-3xl font-bold text-osrs-gold drop-shadow-[0_0_10px_rgba(201,162,39,0.4)]">
+                          ${customTotal.toFixed(2)}
+                        </span>
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
               )}
-              <div className="flex items-baseline gap-2 mb-4">
-                <span className="font-medieval text-4xl font-bold text-osrs-gold">${customTotal.toFixed(2)}</span>
-                <span className="text-stoner-haze/40 text-sm">Crypto, CashApp & OSRS GP accepted</span>
-              </div>
+              {!product.customQuantity && (
+                <div className="flex items-baseline gap-2 mb-4">
+                  <span className="font-medieval text-4xl font-bold text-osrs-gold">${product.price}</span>
+                  <span className="text-stoner-haze/40 text-sm">Crypto, CashApp & OSRS GP accepted</span>
+                </div>
+              )}
               <div className="flex gap-3">
                 <button
                   onClick={handleAdd}
