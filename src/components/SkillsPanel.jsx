@@ -1,36 +1,49 @@
 import { OSRS_SKILLS } from '../data/skills.js'
 
+const SKILL_LAYOUT = [
+  ['Attack', 'Hitpoints', 'Mining'],
+  ['Strength', 'Agility', 'Smithing'],
+  ['Defence', 'Herblore', 'Fishing'],
+  ['Ranged', 'Thieving', 'Cooking'],
+  ['Prayer', 'Crafting', 'Firemaking'],
+  ['Magic', 'Fletching', 'Woodcutting'],
+  ['Runecraft', 'Slayer', 'Farming'],
+  ['Hunter', 'Construction', null],
+]
+
 export default function SkillsPanel({ skills, size = 'md' }) {
   const hasSkills = skills && Object.keys(skills).length > 0
   if (!hasSkills) return null
 
-  const sizes = {
-    sm: { cell: 'w-12 h-12', icon: 'text-lg', level: 'text-[10px]', gap: 'gap-1' },
-    md: { cell: 'w-16 h-16', icon: 'text-2xl', level: 'text-xs', gap: 'gap-1.5' },
-    lg: { cell: 'w-20 h-20', icon: 'text-3xl', level: 'text-sm', gap: 'gap-2' },
+  const sizeClasses = {
+    sm: { wrapper: 'w-full max-w-[200px]', num: 'text-[8px]', img: 'w-full' },
+    md: { wrapper: 'w-full max-w-[280px]', num: 'text-[10px]', img: 'w-full' },
+    lg: { wrapper: 'w-full max-w-[400px]', num: 'text-sm', img: 'w-full' },
   }
-  const s = sizes[size]
+  const s = sizeClasses[size]
 
   return (
-    <div className={`grid grid-cols-3 ${s.gap} relative z-10`}>
-      {OSRS_SKILLS.map(skill => {
-        const level = skills[skill.name]
-        return (
-          <div
-            key={skill.name}
-            className={`${s.cell} flex flex-col items-center justify-center rounded-lg bg-gradient-to-b from-osrs-brown/60 to-osrs-darker border border-osrs-brownLight/50 relative`}
-          >
-            <span className={s.icon}>{skill.icon}</span>
-            {level ? (
-              <span className={`${s.level} font-bold text-yellow-300`} style={{ textShadow: '0 1px 2px black' }}>
-                {level}
-              </span>
-            ) : (
-              <span className={`${s.level} text-stoner-haze/20`}>—</span>
-            )}
-          </div>
-        )
-      })}
+    <div className={`relative ${s.wrapper} mx-auto`}>
+      <img src="/osrs-skills-bg.jpeg" alt="Skills" className={`${s.img} object-contain`} />
+      {/* Number overlay grid */}
+      <div className="absolute inset-0 grid grid-cols-3 grid-rows-8" style={{ padding: '4% 5% 4% 5%' }}>
+        {SKILL_LAYOUT.flat().map((skillName, idx) => {
+          if (!skillName) return <div key={idx} />
+          const level = skills[skillName]
+          return (
+            <div key={idx} className="relative flex items-end justify-end pr-[6%] pb-[4%]">
+              {level && (
+                <span
+                  className={`${s.num} font-bold text-yellow-300 leading-none`}
+                  style={{ textShadow: '0 0 3px black, 1px 1px 1px black' }}
+                >
+                  {level}
+                </span>
+              )}
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
