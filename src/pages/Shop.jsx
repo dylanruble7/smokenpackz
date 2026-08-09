@@ -38,7 +38,7 @@ export default function Shop() {
     category: 'accounts',
     name: acc.name,
     price: parseFloat(acc.price),
-    image: '/osrs-skills.webp',
+    image: '',
     tag: acc.tag || '',
     tagColor: acc.tag_color || '',
     description: acc.description || '',

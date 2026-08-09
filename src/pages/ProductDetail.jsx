@@ -35,7 +35,7 @@ export default function ProductDetail() {
               category: 'accounts',
               name: data.name,
               price: parseFloat(data.price),
-              image: '/osrs-skills.webp',
+              image: '',
               tag: data.tag || '',
               tagColor: data.tag_color || '',
               description: data.description || '',
