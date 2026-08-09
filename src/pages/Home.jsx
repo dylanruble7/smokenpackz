@@ -77,18 +77,22 @@ export default function Home() {
           {sponsors.map(sponsor => (
             <div key={sponsor.id} className="card overflow-hidden group">
               {/* Banner */}
-              <div className="h-40 bg-gradient-to-br from-osrs-brown/40 to-osrs-dark/60 flex items-center justify-center overflow-hidden">
-                {sponsor.banner && sponsor.bannerType === 'video' ? (
-                  <video src={sponsor.banner} autoPlay loop muted playsInline className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                ) : sponsor.banner ? (
-                  <img src={sponsor.banner} alt={sponsor.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                ) : (
-                  <div className="text-center">
-                    <Crown className="w-10 h-10 text-osrs-gold/40 mx-auto mb-1" />
-                    <span className="text-stoner-haze/30 text-sm">Banner Available</span>
-                  </div>
-                )}
-              </div>
+              {sponsor.banner && sponsor.bannerType === 'video' ? (
+                <div className="w-full bg-black flex items-center justify-center overflow-hidden">
+                  <video src={sponsor.banner} autoPlay loop muted playsInline className="w-full max-h-[300px] object-contain group-hover:scale-105 transition-transform" />
+                </div>
+              ) : (
+                <div className="h-40 bg-gradient-to-br from-osrs-brown/40 to-osrs-dark/60 flex items-center justify-center overflow-hidden">
+                  {sponsor.banner ? (
+                    <img src={sponsor.banner} alt={sponsor.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                  ) : (
+                    <div className="text-center">
+                      <Crown className="w-10 h-10 text-osrs-gold/40 mx-auto mb-1" />
+                      <span className="text-stoner-haze/30 text-sm">Banner Available</span>
+                    </div>
+                  )}
+                </div>
+              )}
               {/* Info */}
               <div className="p-5">
                 <h3 className="font-medieval text-lg font-bold text-osrs-goldBright mb-2">{sponsor.name}</h3>
