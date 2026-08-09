@@ -16,12 +16,19 @@ export default function ProductDetail() {
   const { addToCart } = useCart()
   const [added, setAdded] = useState(false)
   const [bondQty, setBondQty] = useState(1)
+  const [inputValue, setInputValue] = useState('1')
 
   const product = products.find(p => p.id === id)
 
-  // Adjust min quantity for gold
+  // Adjust defaults based on product type
   useEffect(() => {
-    if (product?.id === 'gold-custom' && bondQty < 5) setBondQty(5)
+    if (product?.id === 'gold-custom') {
+      setBondQty(5)
+      setInputValue('5')
+    } else if (product?.id === 'bond-custom') {
+      setBondQty(1)
+      setInputValue('1')
+    }
   }, [product])
 
   if (!product) {
@@ -53,17 +60,20 @@ export default function ProductDetail() {
     return 4.25
   }
   const basePrice = isGold ? 0.27 : 4.25
-  const customTotal = product?.customQuantity ? unitPrice(bondQty) * bondQty : product?.price
+  const getValidQty = () => Math.max(minQty, Math.min(99999, bondQty))
+  const validQty = getValidQty()
+  const customTotal = product?.customQuantity ? unitPrice(validQty) * validQty : product?.price
 
   const handleAdd = () => {
     if (product.customQuantity) {
+      const qty = getValidQty()
       const customName = isGold
-        ? `${bondQty}M OSRS Gold - Custom Order`
-        : `${bondQty} OSRS Bond${bondQty > 1 ? 's' : ''} - Custom Order`
+        ? `${qty}M OSRS Gold - Custom Order`
+        : `${qty} OSRS Bond${qty > 1 ? 's' : ''} - Custom Order`
       const customStats = isGold
-        ? { ...product.stats, 'Amount': `${bondQty}M GP`, 'Price per 1M': `$${unitPrice(bondQty).toFixed(2)}` }
-        : { ...product.stats, 'Amount': `${bondQty} Bonds`, 'Membership': `${bondQty * 14} days`, 'Price per Bond': `$${unitPrice(bondQty).toFixed(2)}` }
-      addToCart({ ...product, price: unitPrice(bondQty), name: customName, stats: customStats }, bondQty)
+        ? { ...product.stats, 'Amount': `${qty}M GP`, 'Price per 1M': `$${unitPrice(qty).toFixed(2)}` }
+        : { ...product.stats, 'Amount': `${qty} Bonds`, 'Membership': `${qty * 14} days`, 'Price per Bond': `$${unitPrice(qty).toFixed(2)}` }
+      addToCart({ ...product, price: unitPrice(qty), name: customName, stats: customStats }, qty)
     } else {
       addToCart(product)
     }
@@ -73,13 +83,14 @@ export default function ProductDetail() {
 
   const handleBuyNow = () => {
     if (product.customQuantity) {
+      const qty = getValidQty()
       const customName = isGold
-        ? `${bondQty}M OSRS Gold - Custom Order`
-        : `${bondQty} OSRS Bond${bondQty > 1 ? 's' : ''} - Custom Order`
+        ? `${qty}M OSRS Gold - Custom Order`
+        : `${qty} OSRS Bond${qty > 1 ? 's' : ''} - Custom Order`
       const customStats = isGold
-        ? { ...product.stats, 'Amount': `${bondQty}M GP`, 'Price per 1M': `$${unitPrice(bondQty).toFixed(2)}` }
-        : { ...product.stats, 'Amount': `${bondQty} Bonds`, 'Membership': `${bondQty * 14} days`, 'Price per Bond': `$${unitPrice(bondQty).toFixed(2)}` }
-      addToCart({ ...product, price: unitPrice(bondQty), name: customName, stats: customStats }, bondQty)
+        ? { ...product.stats, 'Amount': `${qty}M GP`, 'Price per 1M': `$${unitPrice(qty).toFixed(2)}` }
+        : { ...product.stats, 'Amount': `${qty} Bonds`, 'Membership': `${qty * 14} days`, 'Price per Bond': `$${unitPrice(qty).toFixed(2)}` }
+      addToCart({ ...product, price: unitPrice(qty), name: customName, stats: customStats }, qty)
     } else {
       addToCart(product)
     }
@@ -159,19 +170,28 @@ export default function ProductDetail() {
                       </label>
                       <div className="flex items-stretch gap-0">
                         <button
-                          onClick={() => setBondQty(Math.max(minQty, bondQty - (isGold ? 5 : 1)))}
+                          onClick={() => { const q = Math.max(minQty, bondQty - (isGold ? 5 : 1)); setBondQty(q); setInputValue(String(q)) }}
                           className="px-5 rounded-l-lg bg-osrs-dark border border-osrs-brownLight border-r-0 text-osrs-goldBright font-bold text-2xl hover:bg-osrs-brown/40 hover:border-osrs-gold transition-all"
                         >−</button>
                         <input
                           type="number"
                           min={minQty}
                           max="99999"
-                          value={bondQty}
-                          onChange={e => setBondQty(Math.max(minQty, Math.min(99999, parseInt(e.target.value) || minQty)))}
+                          value={inputValue}
+                          onChange={e => {
+                            setInputValue(e.target.value)
+                            const parsed = parseInt(e.target.value)
+                            if (!isNaN(parsed)) setBondQty(parsed)
+                          }}
+                          onBlur={() => {
+                            const qty = Math.max(minQty, Math.min(99999, parseInt(inputValue) || minQty))
+                            setBondQty(qty)
+                            setInputValue(String(qty))
+                          }}
                           className="flex-1 text-center bg-osrs-dark border-y border-osrs-brownLight text-stoner-haze text-3xl font-bold py-3 focus:outline-none focus:border-osrs-gold transition-colors"
                         />
                         <button
-                          onClick={() => setBondQty(Math.min(99999, bondQty + (isGold ? 5 : 1)))}
+                          onClick={() => { const q = Math.min(99999, bondQty + (isGold ? 5 : 1)); setBondQty(q); setInputValue(String(q)) }}
                           className="px-5 rounded-r-lg bg-osrs-dark border border-osrs-brownLight border-l-0 text-osrs-goldBright font-bold text-2xl hover:bg-osrs-brown/40 hover:border-osrs-gold transition-all"
                         >+</button>
                       </div>
@@ -188,9 +208,9 @@ export default function ProductDetail() {
                         {(isGold ? [5, 10, 50, 100, 500, 1000] : [1, 5, 10, 25, 50, 100]).map(qty => (
                           <button
                             key={qty}
-                            onClick={() => setBondQty(qty)}
+                            onClick={() => { setBondQty(qty); setInputValue(String(qty)) }}
                             className={`py-2.5 rounded-lg font-bold text-sm transition-all ${
-                              bondQty === qty
+                              validQty === qty
                                 ? 'bg-gold-gradient text-osrs-dark scale-105'
                                 : 'bg-osrs-dark border border-osrs-brownLight text-stoner-haze hover:border-osrs-gold hover:text-osrs-goldBright'
                             }`}
@@ -205,27 +225,27 @@ export default function ProductDetail() {
                     <div className="bg-osrs-darker/80 rounded-lg p-4 border border-osrs-brownLight/50 space-y-2">
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-stoner-haze/50">Price per {unitLabel}</span>
-                        <span className="text-osrs-goldBright font-bold text-base">${unitPrice(bondQty).toFixed(2)}</span>
+                        <span className="text-osrs-goldBright font-bold text-base">${unitPrice(validQty).toFixed(2)}</span>
                       </div>
                       {isGold && (
                         <div className="flex justify-between items-center text-sm">
                           <span className="text-stoner-haze/50">Total Gold</span>
-                          <span className="text-stoner-haze font-bold">{bondQty.toLocaleString()}M GP</span>
+                          <span className="text-stoner-haze font-bold">{validQty.toLocaleString()}M GP</span>
                         </div>
                       )}
                       {isBond && (
                         <div className="flex justify-between items-center text-sm">
                           <span className="text-stoner-haze/50">Total Membership</span>
-                          <span className="text-stoner-haze font-bold">{bondQty * 14} days ({Math.floor(bondQty * 14 / 30)} months)</span>
+                          <span className="text-stoner-haze font-bold">{validQty * 14} days ({Math.floor(validQty * 14 / 30)} months)</span>
                         </div>
                       )}
-                      {bondQty >= (isGold ? 50 : 5) && (
+                      {validQty >= (isGold ? 50 : 5) && (
                         <div className="flex justify-between items-center text-sm pt-1 border-t border-osrs-brownLight/30">
                           <span className="text-stoner-greenBright flex items-center gap-1">
                             ✓ Bulk Discount
                           </span>
                           <span className="text-stoner-greenBright font-bold">
-                            Save ${(basePrice - unitPrice(bondQty)).toFixed(2)}/{unitLabel}
+                            Save ${(basePrice - unitPrice(validQty)).toFixed(2)}/{unitLabel}
                           </span>
                         </div>
                       )}
