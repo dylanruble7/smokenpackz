@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-1 mb-4">
               <img src="/packzlogo.png" alt="SmokenPackz" className="w-60 h-60 object-contain" />
               <span className="font-medieval text-lg font-bold text-osrs-goldBright">SmokenPackz</span>
             </div>
