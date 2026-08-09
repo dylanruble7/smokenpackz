@@ -1,11 +1,11 @@
 export const sponsors = [
   {
-    id: 'sponsor-1',
-    name: 'Your Sponsor Here',
-    description: 'Banner ads available. Get your Discord, website, or service in front of thousands of OSRS players.',
+    id: 'runewager',
+    name: 'RuneWager',
+    description: 'OSRS gold betting and wagering platform. Place bets, win big, and cash out in GP. Use code SMOKEN for a bonus on your first wager.',
     banner: null,
     discord: null,
-    website: null,
+    website: 'https://runewager.com/r/smoken',
     color: '#c9a227',
   },
 ]
