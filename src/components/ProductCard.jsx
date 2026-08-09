@@ -22,7 +22,7 @@ export default function ProductCard({ product }) {
   const logo = categoryLogos[product.category]
 
   return (
-    <div className="card group flex flex-col">
+    <Link to={`/product/${product.id}`} className="card group flex flex-col cursor-pointer">
       {/* Image / Icon area */}
       <div className="relative h-52 flex items-center justify-center bg-gradient-to-br from-osrs-brown/50 to-osrs-dark/50 overflow-hidden">
         <div className="absolute inset-0 bg-smoke animate-smoke" />
@@ -59,22 +59,26 @@ export default function ProductCard({ product }) {
           <span className="font-medieval text-2xl font-bold text-osrs-gold">
             {product.customQuantity ? `From $${product.price}` : `$${product.price}`}
           </span>
-          <button
-            onClick={handleAdd}
+          <div
+            onClick={product.customQuantity ? undefined : (e) => { e.preventDefault(); handleAdd(); }}
             className={`px-4 py-2 rounded-lg font-medieval font-bold text-sm transition-all duration-200 flex items-center gap-2 ${
-              added
-                ? 'bg-stoner-greenBright text-osrs-dark'
-                : 'bg-gold-gradient text-osrs-dark hover:scale-105'
+              product.customQuantity
+                ? 'bg-gold-gradient text-osrs-dark hover:scale-105'
+                : added
+                  ? 'bg-stoner-greenBright text-osrs-dark'
+                  : 'bg-gold-gradient text-osrs-dark hover:scale-105'
             }`}
           >
-            {added ? (
+            {product.customQuantity ? (
+              <><ShoppingCart className="w-4 h-4" /> Choose Amount</>
+            ) : added ? (
               <><Check className="w-4 h-4" /> Added!</>
             ) : (
               <><ShoppingCart className="w-4 h-4" /> Add</>
             )}
-          </button>
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
