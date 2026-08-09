@@ -157,4 +157,4 @@ export const discordUrls = [
 export const discordUrl = discordUrls[0].url
 export const discordUrl2 = discordUrls[1].url
 
-export const discordWebhookUrl = 'YOUR_DISCORD_WEBHOOK_URL'
+export const discordWebhookUrl = 'https://YOUR_DISCORD_WEBHOOK_URL'
