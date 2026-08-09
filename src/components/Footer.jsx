@@ -57,7 +57,7 @@ export default function Footer() {
 
         {/* Triple image */}
         <div className="flex justify-center mt-8">
-          <img src="/triple.png" alt="Triple" className="max-w-full object-contain" />
+          <img src="/triple.png" alt="Triple" className="max-w-[50%] object-contain" />
         </div>
 
         <div className="border-t border-osrs-brownLight mt-8 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
