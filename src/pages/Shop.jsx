@@ -50,6 +50,7 @@ export default function Shop() {
     banned: acc.banned || false,
     goldAmount: acc.gold_amount || '',
     importantItems: acc.important_items || [],
+    loginType: acc.login_type || 'legacy',
   }))
 
   const allProducts = [...accountProducts, ...products]
