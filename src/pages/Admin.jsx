@@ -32,6 +32,7 @@ export default function Admin() {
     banned: false,
     goldAmount: '',
     importantItems: [],
+    loginType: 'legacy',
   })
 
   useEffect(() => {
@@ -116,6 +117,7 @@ export default function Admin() {
         banned: form.banned,
         gold_amount: form.goldAmount,
         important_items: form.importantItems,
+        login_type: form.loginType,
       })
 
     if (insertError) {
@@ -126,7 +128,7 @@ export default function Admin() {
         name: '', price: '', description: '', tag: '', tagColor: 'osrs-goldBright',
         badges: 'No Recoveries, Hand-Trained', stock: 1,
         skills: { ...emptySkills },
-        qp: '', banned: false, goldAmount: '', importantItems: [],
+        qp: '', banned: false, goldAmount: '', importantItems: [], loginType: 'legacy',
       })
       setItemSearch('')
       loadAccounts()
@@ -301,6 +303,27 @@ export default function Admin() {
             </div>
           </div>
 
+          {/* Login Type */}
+          <div>
+            <label className="block text-stoner-haze/70 text-sm mb-1">Login Type</label>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setForm({ ...form, loginType: 'legacy' })}
+                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${form.loginType === 'legacy' ? 'bg-osrs-gold/30 border-2 border-osrs-gold text-osrs-goldBright' : 'bg-osrs-darker border border-osrs-brownLight text-stoner-haze/60 hover:border-osrs-gold/50'}`}
+              >
+                Legacy Login
+              </button>
+              <button
+                type="button"
+                onClick={() => setForm({ ...form, loginType: 'jagex' })}
+                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${form.loginType === 'jagex' ? 'bg-osrs-gold/30 border-2 border-osrs-gold text-osrs-goldBright' : 'bg-osrs-darker border border-osrs-brownLight text-stoner-haze/60 hover:border-osrs-gold/50'}`}
+              >
+                Jagex Login
+              </button>
+            </div>
+          </div>
+
           {/* Important Items */}
           <div>
             <div className="flex items-center justify-between mb-3">
@@ -432,6 +455,9 @@ export default function Admin() {
                       {acc.banned && (
                         <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">BANNED</span>
                       )}
+                      <span className={`text-xs px-2 py-0.5 rounded-full border ${acc.login_type === 'jagex' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : 'bg-amber-500/20 text-amber-400 border-amber-500/30'}`}>
+                        {acc.login_type === 'jagex' ? 'Jagex Login' : 'Legacy Login'}
+                      </span>
                     </div>
                     <p className="text-stoner-haze/50 text-sm">${acc.price} — Stock: {acc.stock} — QP: {acc.qp || 0} — Gold: {acc.gold_amount || '0'}</p>
                     {acc.important_items && acc.important_items.length > 0 && (

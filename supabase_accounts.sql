@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS custom_accounts (
   banned BOOLEAN DEFAULT false,
   gold_amount TEXT DEFAULT '',
   important_items TEXT[] DEFAULT '{}',
+  login_type TEXT DEFAULT 'legacy',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -23,6 +24,7 @@ ALTER TABLE custom_accounts ADD COLUMN IF NOT EXISTS qp INTEGER DEFAULT 0;
 ALTER TABLE custom_accounts ADD COLUMN IF NOT EXISTS banned BOOLEAN DEFAULT false;
 ALTER TABLE custom_accounts ADD COLUMN IF NOT EXISTS gold_amount TEXT DEFAULT '';
 ALTER TABLE custom_accounts ADD COLUMN IF NOT EXISTS important_items TEXT[] DEFAULT '{}';
+ALTER TABLE custom_accounts ADD COLUMN IF NOT EXISTS login_type TEXT DEFAULT 'legacy';
 
 -- Enable Row Level Security
 ALTER TABLE custom_accounts ENABLE ROW LEVEL SECURITY;

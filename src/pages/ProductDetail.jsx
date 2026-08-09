@@ -47,6 +47,7 @@ export default function ProductDetail() {
               banned: data.banned || false,
               goldAmount: data.gold_amount || '',
               importantItems: data.important_items || [],
+              loginType: data.login_type || 'legacy',
             })
           }
         })
@@ -202,6 +203,12 @@ export default function ProductDetail() {
                     <p className="text-stoner-haze/50 text-xs mb-1">Status</p>
                     <p className={`font-medieval text-sm font-bold ${p.banned ? 'text-red-400' : 'text-stoner-greenBright'}`}>
                       {p.banned ? 'BANNED' : 'Clean'}
+                    </p>
+                  </div>
+                  <div className="text-center bg-osrs-darker/60 rounded-lg p-3">
+                    <p className="text-stoner-haze/50 text-xs mb-1">Login Type</p>
+                    <p className={`font-medieval text-sm font-bold ${p.loginType === 'jagex' ? 'text-blue-400' : 'text-amber-400'}`}>
+                      {p.loginType === 'jagex' ? 'Jagex' : 'Legacy'}
                     </p>
                   </div>
                 </div>
