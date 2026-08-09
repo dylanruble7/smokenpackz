@@ -1,12 +1,9 @@
 import { Link } from 'react-router-dom'
 import { Zap, Shield, MessageCircle, Coins, ArrowRight, ExternalLink, Crown } from 'lucide-react'
-import { products, discordUrls } from '../data/products.js'
+import { discordUrls } from '../data/products.js'
 import { sponsors } from '../data/sponsors.js'
-import ProductCard from '../components/ProductCard.jsx'
 
 export default function Home() {
-  const featured = products.filter(p => p.tag).slice(0, 6)
-
   return (
     <div className="smoke-bg">
       {/* Hero */}
@@ -67,43 +64,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured products */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="section-title">Featured Drops 🔥</h2>
-          <Link to="/shop" className="nav-link flex items-center gap-1">
-            View All <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featured.map(product => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
-
-      {/* Categories */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-        <h2 className="section-title text-center mb-12">Shop By Category</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Link to="/shop?cat=accounts" className="card group p-8 text-center">
-            <img src="/packzaccs.png" alt="OSRS Accounts" className="w-40 h-40 object-contain mx-auto mb-4 group-hover:scale-110 transition-transform" />
-            <h3 className="font-medieval text-2xl font-bold text-osrs-goldBright mb-2">OSRS Accounts</h3>
-            <p className="text-stoner-haze/60">Pures, mains, skillers, ironmen — hand-trained, no botting, no recovery risk.</p>
-          </Link>
-          <Link to="/shop?cat=gold" className="card group p-8 text-center">
-            <img src="/packzgold.png" alt="OSRS Gold" className="w-40 h-40 object-contain mx-auto mb-4 group-hover:scale-110 transition-transform" />
-            <h3 className="font-medieval text-2xl font-bold text-osrs-goldBright mb-2">OSRS Gold</h3>
-            <p className="text-stoner-haze/60">From pocket change to whale orders. Fast, safe, in-game trades. Bonus GP on bulk.</p>
-          </Link>
-          <Link to="/shop?cat=bonds" className="card group p-8 text-center">
-            <img src="/packzbond.png" alt="OSRS Bonds" className="w-40 h-40 object-contain mx-auto mb-4 group-hover:scale-110 transition-transform" />
-            <h3 className="font-medieval text-2xl font-bold text-osrs-goldBright mb-2">OSRS Bonds</h3>
-            <p className="text-stoner-haze/60">Membership bonds from $4.50. Cheaper than Jagex. Bulk discounts available.</p>
-          </Link>
-        </div>
-      </section>
-
       {/* Sponsors */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
         <div className="text-center mb-10">
@@ -152,6 +112,28 @@ export default function Home() {
         <p className="text-center text-stoner-haze/40 text-xs mt-6">
           Want to sponsor SmokenPackz? Join our Discord to inquire about ad placement.
         </p>
+      </section>
+
+      {/* Categories */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+        <h2 className="section-title text-center mb-12">Shop By Category</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <Link to="/shop?cat=accounts" className="card group p-8 text-center">
+            <img src="/packzaccs.png" alt="OSRS Accounts" className="w-40 h-40 object-contain mx-auto mb-4 group-hover:scale-110 transition-transform" />
+            <h3 className="font-medieval text-2xl font-bold text-osrs-goldBright mb-2">OSRS Accounts</h3>
+            <p className="text-stoner-haze/60">Pures, mains, skillers, ironmen — hand-trained, no botting, no recovery risk.</p>
+          </Link>
+          <Link to="/shop?cat=gold" className="card group p-8 text-center">
+            <img src="/packzgold.png" alt="OSRS Gold" className="w-40 h-40 object-contain mx-auto mb-4 group-hover:scale-110 transition-transform" />
+            <h3 className="font-medieval text-2xl font-bold text-osrs-goldBright mb-2">OSRS Gold</h3>
+            <p className="text-stoner-haze/60">From pocket change to whale orders. Fast, safe, in-game trades. Bonus GP on bulk.</p>
+          </Link>
+          <Link to="/shop?cat=bonds" className="card group p-8 text-center">
+            <img src="/packzbond.png" alt="OSRS Bonds" className="w-40 h-40 object-contain mx-auto mb-4 group-hover:scale-110 transition-transform" />
+            <h3 className="font-medieval text-2xl font-bold text-osrs-goldBright mb-2">OSRS Bonds</h3>
+            <p className="text-stoner-haze/60">Membership bonds from $4.50. Cheaper than Jagex. Bulk discounts available.</p>
+          </Link>
+        </div>
       </section>
 
       {/* Discord CTA */}
