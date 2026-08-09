@@ -55,7 +55,7 @@ export default function Footer() {
           </div>
 
           {/* Triple image - fills rest of row next to Why Us */}
-          <div className="col-span-3 flex items-center justify-center">
+          <div className="col-span-3 flex items-start justify-end -mt-4">
             <img src="/triple.png" alt="Triple" className="max-w-full max-h-72 object-contain" />
           </div>
         </div>
