@@ -32,7 +32,7 @@ export async function sendOrderNotification({ orderId, paymentMethod, cartTotal,
   const payload = {
     username: 'SmokenPackz Orders',
     avatar_url: 'https://smokenpackz.com/logo.png',
-    content: `🔔 **NEW ORDER** — ${methodLabels[paymentMethod] || paymentMethod}`,
+    content: `🔔 <@1227988354306412574> **NEW ORDER** — ${methodLabels[paymentMethod] || paymentMethod}`,
     embeds: [{
       title: `Order ${orderId}`,
       color: 0xc9a227,
