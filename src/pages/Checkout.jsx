@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Check, Copy, Leaf, MessageCircle, Clock, AlertCircle, Loader, QrCode } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useCart } from '../context/CartContext.jsx'
@@ -28,6 +28,7 @@ export default function Checkout() {
   const { cart, cartTotal, clearCart } = useCart()
   const { user } = useAuth()
   const { prices: gpPrices, ourPrice, lowestCompetitor, updatedAt } = useGpPrices()
+  const navigate = useNavigate()
   const [step, setStep] = useState('details')
   const [selectedCrypto, setSelectedCrypto] = useState(null)
   const [selectedPayment, setSelectedPayment] = useState(null)
@@ -159,6 +160,11 @@ export default function Checkout() {
     const newOrderId = generateOrderId()
     setOrderId(newOrderId)
     setStep('osrsgp')
+  }
+
+  const handleGoToChat = () => {
+    clearCart()
+    navigate(`/chat/${orderId}`)
   }
 
   const handleCard = () => {
@@ -478,7 +484,7 @@ export default function Checkout() {
 
             <div className="flex gap-3 mt-6">
               <button onClick={() => setStep('payment')} className="btn-secondary flex-1">Back</button>
-              <button onClick={handleComplete} className="btn-primary flex-1">Place Order & Continue in Discord</button>
+              <button onClick={handleGoToChat} className="btn-primary flex-1">Place Order & Start Chat 💬</button>
             </div>
           </div>
         )}
