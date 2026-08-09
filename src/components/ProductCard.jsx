@@ -57,7 +57,7 @@ export default function ProductCard({ product }) {
         {/* Price + Add to cart */}
         <div className="flex items-center justify-between mt-auto">
           <span className="font-medieval text-2xl font-bold text-osrs-gold">
-            ${product.price}
+            {product.customQuantity ? `From $${product.price}` : `$${product.price}`}
           </span>
           <button
             onClick={handleAdd}

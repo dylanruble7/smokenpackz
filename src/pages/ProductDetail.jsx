@@ -15,6 +15,7 @@ export default function ProductDetail() {
   const navigate = useNavigate()
   const { addToCart } = useCart()
   const [added, setAdded] = useState(false)
+  const [bondQty, setBondQty] = useState(1)
 
   const product = products.find(p => p.id === id)
 
@@ -29,14 +30,30 @@ export default function ProductDetail() {
     )
   }
 
+  const bondPriceEach = (qty) => {
+    if (qty >= 25) return 4.00
+    if (qty >= 10) return 4.10
+    if (qty >= 5) return 4.20
+    return 4.25
+  }
+  const bondTotal = product?.customQuantity ? bondPriceEach(bondQty) * bondQty : product?.price
+
   const handleAdd = () => {
-    addToCart(product)
+    if (product.customQuantity) {
+      addToCart({ ...product, price: bondPriceEach(bondQty), name: `${bondQty} OSRS Bond${bondQty > 1 ? 's' : ''} - Custom Order`, stats: { ...product.stats, 'Amount': `${bondQty} Bonds`, 'Membership': `${bondQty * 14} days`, 'Price per Bond': `$${bondPriceEach(bondQty).toFixed(2)}` } }, bondQty)
+    } else {
+      addToCart(product)
+    }
     setAdded(true)
     setTimeout(() => setAdded(false), 1500)
   }
 
   const handleBuyNow = () => {
-    addToCart(product)
+    if (product.customQuantity) {
+      addToCart({ ...product, price: bondPriceEach(bondQty), name: `${bondQty} OSRS Bond${bondQty > 1 ? 's' : ''} - Custom Order`, stats: { ...product.stats, 'Amount': `${bondQty} Bonds`, 'Membership': `${bondQty * 14} days`, 'Price per Bond': `$${bondPriceEach(bondQty).toFixed(2)}` } }, bondQty)
+    } else {
+      addToCart(product)
+    }
     navigate('/checkout')
   }
 
@@ -96,8 +113,46 @@ export default function ProductDetail() {
 
             {/* Price + actions */}
             <div className="mt-auto">
+              {product.customQuantity && (
+                <div className="mb-6 bg-osrs-dark/60 rounded-lg p-5 border border-osrs-brownLight">
+                  <h3 className="font-medieval text-osrs-gold mb-3 text-sm">Choose Quantity</h3>
+                  <div className="flex items-center gap-3 mb-3">
+                    <button
+                      onClick={() => setBondQty(Math.max(1, bondQty - 1))}
+                      className="w-10 h-10 rounded-lg bg-osrs-dark border border-osrs-brownLight text-osrs-goldBright font-bold text-xl hover:border-osrs-gold transition-colors"
+                    >−</button>
+                    <input
+                      type="number"
+                      min="1"
+                      max="999"
+                      value={bondQty}
+                      onChange={e => setBondQty(Math.max(1, Math.min(999, parseInt(e.target.value) || 1)))}
+                      className="w-20 text-center bg-osrs-dark border border-osrs-brownLight rounded-lg text-stoner-haze text-lg font-bold py-2"
+                    />
+                    <button
+                      onClick={() => setBondQty(Math.min(999, bondQty + 1))}
+                      className="w-10 h-10 rounded-lg bg-osrs-dark border border-osrs-brownLight text-osrs-goldBright font-bold text-xl hover:border-osrs-gold transition-colors"
+                    >+</button>
+                  </div>
+                  <div className="text-sm space-y-1">
+                    <div className="flex justify-between">
+                      <span className="text-stoner-haze/50">Price per bond:</span>
+                      <span className="text-osrs-goldBright font-bold">${bondPriceEach(bondQty).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-stoner-haze/50">Membership:</span>
+                      <span className="text-stoner-haze font-bold">{bondQty * 14} days</span>
+                    </div>
+                    {bondQty >= 5 && (
+                      <div className="text-stoner-greenBright text-xs pt-1">
+                        ✓ Bulk discount applied! Save ${(4.25 - bondPriceEach(bondQty)).toFixed(2)} per bond
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
               <div className="flex items-baseline gap-2 mb-4">
-                <span className="font-medieval text-4xl font-bold text-osrs-gold">${product.price}</span>
+                <span className="font-medieval text-4xl font-bold text-osrs-gold">${bondTotal.toFixed(2)}</span>
                 <span className="text-stoner-haze/40 text-sm">Crypto, CashApp & OSRS GP accepted</span>
               </div>
               <div className="flex gap-3">
