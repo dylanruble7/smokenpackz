@@ -46,15 +46,6 @@ export default function Navbar() {
                 Discord {i + 1}
               </a>
             ))}
-            {user ? (
-              <Link to="/account" className="nav-link flex items-center gap-1 text-osrs-goldBright">
-                <User className="w-4 h-4" /> Account
-              </Link>
-            ) : (
-              <Link to="/auth" className="nav-link flex items-center gap-1">
-                <User className="w-4 h-4" /> Sign In
-              </Link>
-            )}
           </div>
 
           {/* Cart + auth + mobile toggle */}
