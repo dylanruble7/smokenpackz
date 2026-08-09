@@ -49,8 +49,6 @@ export default function Chat() {
 
           if (insertError) {
             console.error('Error creating chat room:', insertError)
-            setError('Could not create chat room. Please join our Discord instead.')
-            return
           }
         }
 
@@ -89,7 +87,6 @@ export default function Chat() {
         }
       } catch (e) {
         console.error('Chat setup error:', e)
-        setError('Connection failed. Please join our Discord for assistance.')
       }
     }
 
