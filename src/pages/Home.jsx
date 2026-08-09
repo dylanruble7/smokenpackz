@@ -77,8 +77,10 @@ export default function Home() {
           {sponsors.map(sponsor => (
             <div key={sponsor.id} className="card overflow-hidden group">
               {/* Banner */}
-              <div className="h-32 bg-gradient-to-br from-osrs-brown/40 to-osrs-dark/60 flex items-center justify-center overflow-hidden">
-                {sponsor.banner ? (
+              <div className="h-40 bg-gradient-to-br from-osrs-brown/40 to-osrs-dark/60 flex items-center justify-center overflow-hidden">
+                {sponsor.banner && sponsor.bannerType === 'video' ? (
+                  <video src={sponsor.banner} autoPlay loop muted playsInline className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                ) : sponsor.banner ? (
                   <img src={sponsor.banner} alt={sponsor.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                 ) : (
                   <div className="text-center">
