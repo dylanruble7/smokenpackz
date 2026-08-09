@@ -22,10 +22,10 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-osrs-darker/95 backdrop-blur-md border-b border-osrs-brownLight">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-32">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <img src="/packzlogo.png" alt="SmokenPackz" className="w-20 h-20 object-contain group-hover:rotate-12 transition-transform" />
+            <img src="/packzlogo.png" alt="SmokenPackz" className="w-32 h-32 object-contain group-hover:rotate-12 transition-transform" />
             <span className="font-medieval text-xl font-bold text-osrs-goldBright">SmokenPackz</span>
           </Link>
 
