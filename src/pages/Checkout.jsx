@@ -3,13 +3,21 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, Check, Copy, Leaf, MessageCircle, Clock, AlertCircle, Loader, QrCode } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useCart } from '../context/CartContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 import { cryptoOptions, paymentMethods, discordUrls } from '../data/products.js'
 
 export default function Checkout() {
   const { cart, cartTotal, clearCart } = useCart()
+  const { user } = useAuth()
   const [step, setStep] = useState('details')
   const [selectedCrypto, setSelectedCrypto] = useState(null)
   const [orderInfo, setOrderInfo] = useState({ email: '', discord: '', rsn: '' })
+
+  useEffect(() => {
+    if (user?.email) {
+      setOrderInfo(prev => ({ ...prev, email: user.email }))
+    }
+  }, [user])
   const [orderId, setOrderId] = useState('')
   const [copied, setCopied] = useState(false)
   const [invoice, setInvoice] = useState(null)
@@ -169,40 +177,50 @@ export default function Checkout() {
         {/* Step: Details */}
         {step === 'details' && (
           <form onSubmit={handleDetailsSubmit} className="card p-6 space-y-4 max-w-lg">
-            <h2 className="font-medieval text-xl text-osrs-goldBright">Contact Info</h2>
-            <p className="text-stoner-haze/50 text-sm">We need this to deliver your order. No spam, we promise. We're chill like that.</p>
+            <h2 className="font-medieval text-xl text-osrs-goldBright">Delivery Info</h2>
+            {user ? (
+              <p className="text-stoner-haze/50 text-sm">Signed in as <span className="text-osrs-goldBright font-bold">{user.email}</span>. Just drop your RSN below — we'll handle the rest in Discord after you order.</p>
+            ) : (
+              <p className="text-stoner-haze/50 text-sm">We need this to deliver your order. No spam, we promise. We're chill like that.</p>
+            )}
+            {!user && (
+              <>
+                <div>
+                  <label className="block text-stoner-haze/70 text-sm mb-1">Email *</label>
+                  <input
+                    type="email"
+                    required
+                    value={orderInfo.email}
+                    onChange={e => setOrderInfo({ ...orderInfo, email: e.target.value })}
+                    className="w-full px-4 py-2 rounded-lg bg-osrs-darker border border-osrs-brownLight text-stoner-haze focus:border-osrs-gold focus:outline-none transition-colors"
+                    placeholder="your@email.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-stoner-haze/70 text-sm mb-1">Discord Username *</label>
+                  <input
+                    type="text"
+                    required
+                    value={orderInfo.discord}
+                    onChange={e => setOrderInfo({ ...orderInfo, discord: e.target.value })}
+                    className="w-full px-4 py-2 rounded-lg bg-osrs-darker border border-osrs-brownLight text-stoner-haze focus:border-osrs-gold focus:outline-none transition-colors"
+                    placeholder="username#1234 or @username"
+                  />
+                  <p className="text-stoner-haze/40 text-xs mt-1">We'll contact you on Discord for delivery.</p>
+                </div>
+              </>
+            )}
             <div>
-              <label className="block text-stoner-haze/70 text-sm mb-1">Email *</label>
-              <input
-                type="email"
-                required
-                value={orderInfo.email}
-                onChange={e => setOrderInfo({ ...orderInfo, email: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-osrs-darker border border-osrs-brownLight text-stoner-haze focus:border-osrs-gold focus:outline-none transition-colors"
-                placeholder="your@email.com"
-              />
-            </div>
-            <div>
-              <label className="block text-stoner-haze/70 text-sm mb-1">Discord Username *</label>
+              <label className="block text-stoner-haze/70 text-sm mb-1">In-Game RSN *</label>
               <input
                 type="text"
                 required
-                value={orderInfo.discord}
-                onChange={e => setOrderInfo({ ...orderInfo, discord: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-osrs-darker border border-osrs-brownLight text-stoner-haze focus:border-osrs-gold focus:outline-none transition-colors"
-                placeholder="username#1234 or @username"
-              />
-              <p className="text-stoner-haze/40 text-xs mt-1">We'll contact you on Discord for delivery.</p>
-            </div>
-            <div>
-              <label className="block text-stoner-haze/70 text-sm mb-1">In-Game RSN (for gold delivery)</label>
-              <input
-                type="text"
                 value={orderInfo.rsn}
                 onChange={e => setOrderInfo({ ...orderInfo, rsn: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg bg-osrs-darker border border-osrs-brownLight text-stoner-haze focus:border-osrs-gold focus:outline-none transition-colors"
                 placeholder="Your RuneScape Name"
               />
+              <p className="text-stoner-haze/40 text-xs mt-1">Where we should deliver your gold/items.</p>
             </div>
 
             {/* Order summary */}
@@ -429,7 +447,7 @@ export default function Checkout() {
               {paymentStatus === 'finished' || paymentStatus === 'confirmed'
                 ? ' Your crypto payment has been auto-verified on the blockchain.'
                 : ' We\'ll verify your payment and contact you on Discord.'}
-              {' '}We'll reach out to you on Discord ({orderInfo.discord}) for delivery.
+              {' '}{user ? "We'll reach out to you on Discord for delivery." : `We'll reach out to you on Discord (${orderInfo.discord}) for delivery.`}
             </p>
             <div className="bg-stoner-greenDeep/20 border border-stoner-green/30 rounded-lg p-4 mb-6">
               <p className="text-stoner-haze/70 text-sm">
