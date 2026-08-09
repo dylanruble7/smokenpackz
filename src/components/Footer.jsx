@@ -9,7 +9,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <img src="/packzlogo.png" alt="SmokenPackz" className="w-40 h-40 object-contain" />
+              <img src="/packzlogo.png" alt="SmokenPackz" className="w-60 h-60 object-contain" />
               <span className="font-medieval text-lg font-bold text-osrs-goldBright">SmokenPackz</span>
             </div>
             <p className="text-stoner-haze/60 text-sm max-w-md">
