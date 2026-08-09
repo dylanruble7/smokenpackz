@@ -16,15 +16,15 @@ export default function SkillsPanel({ skills, size = 'md' }) {
   if (!hasSkills) return null
 
   const sizeClasses = {
-    sm: { cell: 'w-9 h-9', icon: 'w-5 h-5', num: 'text-[8px]', gap: 'gap-0.5', panel: 'p-1.5' },
-    md: { cell: 'w-12 h-12', icon: 'w-7 h-7', num: 'text-[10px]', gap: 'gap-1', panel: 'p-2' },
-    lg: { cell: 'w-14 h-14', icon: 'w-8 h-8', num: 'text-xs', gap: 'gap-1', panel: 'p-3' },
+    sm: { cell: 'w-full h-9', icon: 'w-5 h-5', num: 'text-[8px]', gap: 'gap-0.5', panel: 'p-1.5 w-full' },
+    md: { cell: 'w-full h-12', icon: 'w-7 h-7', num: 'text-[10px]', gap: 'gap-1', panel: 'p-2 w-full' },
+    lg: { cell: 'w-full h-14', icon: 'w-8 h-8', num: 'text-xs', gap: 'gap-1', panel: 'p-3 w-full' },
   }
   const s = sizeClasses[size]
 
   return (
     <div
-      className={`inline-block ${s.panel} rounded-lg border-2 border-amber-900/70 bg-gradient-to-b from-stone-800 to-stone-900 shadow-xl`}
+      className={`block ${s.panel} rounded-lg border-2 border-amber-900/70 bg-gradient-to-b from-stone-800 to-stone-900 shadow-xl`}
       style={{ boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.6), 0 4px 16px rgba(0,0,0,0.4)' }}
     >
       <div className={`grid grid-cols-3 ${s.gap}`}>
