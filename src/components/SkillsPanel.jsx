@@ -16,9 +16,9 @@ export default function SkillsPanel({ skills, size = 'md' }) {
   if (!hasSkills) return null
 
   const sizeClasses = {
-    sm: { cell: 'w-14 h-14', icon: 'w-7 h-7', num: 'text-[10px]', gap: 'gap-1', panel: 'p-2', name: 'text-[7px]' },
-    md: { cell: 'w-16 h-16', icon: 'w-8 h-8', num: 'text-xs', gap: 'gap-1.5', panel: 'p-3', name: 'text-[8px]' },
-    lg: { cell: 'w-24 h-24', icon: 'w-12 h-12', num: 'text-base', gap: 'gap-2', panel: 'p-4', name: 'text-xs' },
+    sm: { cell: 'w-9 h-9', icon: 'w-5 h-5', num: 'text-[8px]', gap: 'gap-0.5', panel: 'p-1.5' },
+    md: { cell: 'w-12 h-12', icon: 'w-7 h-7', num: 'text-[10px]', gap: 'gap-1', panel: 'p-2' },
+    lg: { cell: 'w-14 h-14', icon: 'w-8 h-8', num: 'text-xs', gap: 'gap-1', panel: 'p-3' },
   }
   const s = sizeClasses[size]
 
@@ -42,12 +42,12 @@ export default function SkillsPanel({ skills, size = 'md' }) {
                 src={skill?.iconUrl}
                 alt={skillName}
                 className={`${s.icon} object-contain`}
-                style={{ imageRendering: 'pixelated', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.6))' }}
+                style={{ imageRendering: 'pixelated', filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.6))' }}
                 loading="lazy"
               />
               <span
-                className={`${s.num} font-bold leading-none mt-0.5 ${level ? 'text-yellow-300' : 'text-stone-600'}`}
-                style={level ? { textShadow: '0 1px 2px black' } : {}}
+                className={`${s.num} font-bold leading-none mt-px ${level ? 'text-yellow-300' : 'text-stone-600'}`}
+                style={level ? { textShadow: '0 1px 1px black' } : {}}
               >
                 {level || '—'}
               </span>
