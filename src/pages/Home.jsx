@@ -65,45 +65,44 @@ export default function Home() {
       </section>
 
       {/* Sponsors */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        <div className="flex items-center gap-3 mb-4">
-          <Crown className="w-6 h-6 text-osrs-goldBright flex-shrink-0" />
-          <h2 className="font-medieval text-xl font-bold text-osrs-goldBright">Our Sponsors</h2>
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+        <div className="flex items-center gap-2 mb-3">
+          <Crown className="w-5 h-5 text-osrs-goldBright flex-shrink-0" />
+          <h2 className="font-medieval text-lg font-bold text-osrs-goldBright">Sponsored</h2>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-3">
           {sponsors.map(sponsor => (
-            <div key={sponsor.id} className="card overflow-hidden group flex flex-col sm:flex-row">
-              {/* Banner */}
+            <div key={sponsor.id} className="card overflow-hidden group flex items-center gap-0">
+              {/* Banner thumbnail */}
               {sponsor.banner && sponsor.bannerType === 'video' ? (
-                <div className="sm:w-1/2 bg-black overflow-hidden flex-shrink-0">
-                  <video src={sponsor.banner} autoPlay loop muted playsInline className="w-full h-auto max-h-[160px] object-cover block group-hover:scale-105 transition-transform" />
+                <div className="w-40 h-20 bg-black overflow-hidden flex-shrink-0">
+                  <video src={sponsor.banner} autoPlay loop muted playsInline className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                </div>
+              ) : sponsor.banner ? (
+                <div className="w-40 h-20 overflow-hidden flex-shrink-0">
+                  <img src={sponsor.banner} alt={sponsor.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                 </div>
               ) : (
-                <div className="sm:w-1/3 h-32 bg-gradient-to-br from-osrs-brown/40 to-osrs-dark/60 flex items-center justify-center overflow-hidden flex-shrink-0">
-                  {sponsor.banner ? (
-                    <img src={sponsor.banner} alt={sponsor.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                  ) : (
-                    <div className="text-center">
-                      <Crown className="w-8 h-8 text-osrs-gold/40 mx-auto mb-1" />
-                      <span className="text-stoner-haze/30 text-xs">Banner Available</span>
-                    </div>
-                  )}
+                <div className="w-40 h-20 bg-gradient-to-br from-osrs-brown/40 to-osrs-dark/60 flex items-center justify-center flex-shrink-0">
+                  <Crown className="w-6 h-6 text-osrs-gold/40" />
                 </div>
               )}
               {/* Info */}
-              <div className="p-4 flex-1 flex flex-col justify-center">
-                <h3 className="font-medieval text-base font-bold text-osrs-goldBright mb-1">{sponsor.name}</h3>
-                <p className="text-stoner-haze/60 text-xs mb-3 line-clamp-2">{sponsor.description}</p>
-                <div className="flex gap-2">
+              <div className="p-3 flex-1 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="font-medieval text-sm font-bold text-osrs-goldBright mb-0.5">{sponsor.name}</h3>
+                  <p className="text-stoner-haze/50 text-xs line-clamp-1">{sponsor.description}</p>
+                </div>
+                <div className="flex gap-2 flex-shrink-0">
                   {sponsor.discord && (
                     <a href={sponsor.discord} target="_blank" rel="noopener noreferrer"
-                       className="btn-secondary inline-flex items-center gap-1 text-xs py-1.5 px-3">
+                       className="btn-secondary inline-flex items-center gap-1 text-xs py-1 px-2.5">
                       <MessageCircle className="w-3 h-3 text-[#5865F2]" /> Discord
                     </a>
                   )}
                   {sponsor.website && (
                     <a href={sponsor.website} target="_blank" rel="noopener noreferrer"
-                       className="btn-secondary inline-flex items-center gap-1 text-xs py-1.5 px-3">
+                       className="btn-secondary inline-flex items-center gap-1 text-xs py-1 px-2.5">
                       <ExternalLink className="w-3 h-3" /> Visit
                     </a>
                   )}
