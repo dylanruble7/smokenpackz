@@ -16,6 +16,7 @@ import Privacy from './pages/Privacy.jsx'
 import RefundPolicy from './pages/RefundPolicy.jsx'
 import Auth from './pages/Auth.jsx'
 import Account from './pages/Account.jsx'
+import Chat from './pages/Chat.jsx'
 
 export default function App() {
   return (
@@ -38,6 +39,7 @@ export default function App() {
               <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/account" element={<Account />} />
+              <Route path="/chat/:orderId" element={<Chat />} />
             </Routes>
           </main>
           <Footer />
