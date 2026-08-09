@@ -42,6 +42,10 @@ export default function ProductDetail() {
               skills: data.skills || {},
               badges: data.badges || [],
               stock: data.stock || 1,
+              qp: data.qp || 0,
+              banned: data.banned || false,
+              goldAmount: data.gold_amount || '',
+              importantItems: data.important_items || [],
             })
           }
         })
@@ -187,6 +191,43 @@ export default function ProductDetail() {
                       </div>
                     )
                   })}
+                </div>
+              </div>
+            )}
+
+            {/* Account info: QP, Gold, Banned */}
+            {p.skills && Object.keys(p.skills).length > 0 && (
+              <div className="bg-osrs-dark/60 rounded-lg p-4 mb-6 border border-osrs-brownLight">
+                <h3 className="font-medieval text-osrs-gold mb-3 text-sm">Account Info</h3>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="text-center bg-osrs-darker/60 rounded-lg p-3">
+                    <p className="text-stoner-haze/50 text-xs mb-1">Quest Points</p>
+                    <p className="font-medieval text-xl font-bold text-osrs-goldBright">{p.qp || 0}</p>
+                  </div>
+                  <div className="text-center bg-osrs-darker/60 rounded-lg p-3">
+                    <p className="text-stoner-haze/50 text-xs mb-1">Gold on Acc</p>
+                    <p className="font-medieval text-xl font-bold text-osrs-goldBright">{p.goldAmount || '0'}</p>
+                  </div>
+                  <div className="text-center bg-osrs-darker/60 rounded-lg p-3">
+                    <p className="text-stoner-haze/50 text-xs mb-1">Status</p>
+                    <p className={`font-medieval text-sm font-bold ${p.banned ? 'text-red-400' : 'text-stoner-greenBright'}`}>
+                      {p.banned ? 'BANNED' : 'Clean'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Important Items */}
+            {p.importantItems && p.importantItems.length > 0 && (
+              <div className="bg-osrs-dark/60 rounded-lg p-4 mb-6 border border-osrs-brownLight">
+                <h3 className="font-medieval text-osrs-gold mb-3 text-sm">Important Items & Unlocks</h3>
+                <div className="flex flex-wrap gap-2">
+                  {p.importantItems.map(item => (
+                    <span key={item} className="text-xs px-2.5 py-1 rounded-lg bg-osrs-gold/15 text-osrs-goldBright border border-osrs-gold/30">
+                      {item}
+                    </span>
+                  ))}
                 </div>
               </div>
             )}

@@ -46,6 +46,10 @@ export default function Shop() {
     skills: acc.skills || {},
     badges: acc.badges || [],
     stock: acc.stock || 1,
+    qp: acc.qp || 0,
+    banned: acc.banned || false,
+    goldAmount: acc.gold_amount || '',
+    importantItems: acc.important_items || [],
   }))
 
   const allProducts = [...accountProducts, ...products]

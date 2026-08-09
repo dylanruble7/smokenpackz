@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Plus, Trash2, Save, Check, Loader } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2, Save, Check, Loader, X, Search } from 'lucide-react'
 import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../context/AuthContext.jsx'
-import { OSRS_SKILLS } from '../data/skills.js'
+import { OSRS_SKILLS, OSRS_ITEMS } from '../data/skills.js'
 
 export default function Admin() {
   const { user } = useAuth()
@@ -13,6 +13,8 @@ export default function Admin() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
+  const [itemSearch, setItemSearch] = useState('')
+  const [showItemPicker, setShowItemPicker] = useState(false)
 
   const emptySkills = {}
   OSRS_SKILLS.forEach(s => { emptySkills[s.name] = '' })
@@ -26,6 +28,10 @@ export default function Admin() {
     badges: 'No Recoveries, Hand-Trained',
     stock: 1,
     skills: { ...emptySkills },
+    qp: '',
+    banned: false,
+    goldAmount: '',
+    importantItems: [],
   })
 
   useEffect(() => {
@@ -64,6 +70,24 @@ export default function Admin() {
     }))
   }
 
+  const toggleItem = (itemName) => {
+    setForm(prev => {
+      const has = prev.importantItems.includes(itemName)
+      return {
+        ...prev,
+        importantItems: has
+          ? prev.importantItems.filter(i => i !== itemName)
+          : [...prev.importantItems, itemName]
+      }
+    })
+  }
+
+  const filteredItems = OSRS_ITEMS.filter(item =>
+    item.name.toLowerCase().includes(itemSearch.toLowerCase())
+  )
+
+  const itemCategories = [...new Set(filteredItems.map(i => i.category))]
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSaving(true)
@@ -75,8 +99,6 @@ export default function Admin() {
     Object.entries(form.skills).forEach(([k, v]) => {
       if (v !== '') skillsObj[k] = parseInt(v) || 0
     })
-
-    const totalLevel = Object.values(skillsObj).reduce((sum, v) => sum + v, 0)
 
     const { error: insertError } = await supabase
       .from('custom_accounts')
@@ -90,6 +112,10 @@ export default function Admin() {
         badges: form.badges.split(',').map(b => b.trim()).filter(Boolean),
         stock: parseInt(form.stock) || 1,
         skills: skillsObj,
+        qp: parseInt(form.qp) || 0,
+        banned: form.banned,
+        gold_amount: form.goldAmount,
+        important_items: form.importantItems,
       })
 
     if (insertError) {
@@ -100,7 +126,9 @@ export default function Admin() {
         name: '', price: '', description: '', tag: '', tagColor: 'osrs-goldBright',
         badges: 'No Recoveries, Hand-Trained', stock: 1,
         skills: { ...emptySkills },
+        qp: '', banned: false, goldAmount: '', importantItems: [],
       })
+      setItemSearch('')
       loadAccounts()
       setTimeout(() => setSaved(false), 3000)
     }
@@ -236,6 +264,114 @@ export default function Admin() {
             />
           </div>
 
+          {/* QP, Gold, Banned */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-stoner-haze/70 text-sm mb-1">Quest Points</label>
+              <input
+                type="number" min="0" max="300" value={form.qp}
+                onChange={e => setForm({ ...form, qp: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg bg-osrs-darker border border-osrs-brownLight text-stoner-haze focus:border-osrs-gold focus:outline-none transition-colors"
+                placeholder="e.g. 280"
+              />
+            </div>
+            <div>
+              <label className="block text-stoner-haze/70 text-sm mb-1">Gold on Account</label>
+              <input
+                type="text" value={form.goldAmount}
+                onChange={e => setForm({ ...form, goldAmount: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg bg-osrs-darker border border-osrs-brownLight text-stoner-haze focus:border-osrs-gold focus:outline-none transition-colors"
+                placeholder="e.g. 50M, 0, 200M"
+              />
+            </div>
+            <div>
+              <label className="block text-stoner-haze/70 text-sm mb-1">Banned?</label>
+              <div className="flex items-center gap-3 h-[42px]">
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, banned: !form.banned })}
+                  className={`relative w-14 h-7 rounded-full transition-colors ${form.banned ? 'bg-red-500' : 'bg-stoner-greenDeep'}`}
+                >
+                  <span className={`absolute top-1 w-5 h-5 rounded-full bg-white transition-all ${form.banned ? 'left-8' : 'left-1'}`} />
+                </button>
+                <span className={`text-sm font-bold ${form.banned ? 'text-red-400' : 'text-stoner-greenBright'}`}>
+                  {form.banned ? 'BANNED' : 'Clean'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Important Items */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-medieval text-osrs-goldBright text-sm">Important Items & Unlocks</h3>
+              <button
+                type="button"
+                onClick={() => setShowItemPicker(!showItemPicker)}
+                className="text-xs px-3 py-1 rounded-lg bg-osrs-dark border border-osrs-brownLight text-stoner-haze hover:border-osrs-gold transition-colors flex items-center gap-1"
+              >
+                <Plus className="w-3 h-3" /> {showItemPicker ? 'Close' : 'Add Items'}
+              </button>
+            </div>
+
+            {/* Selected items */}
+            {form.importantItems.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-3">
+                {form.importantItems.map(item => (
+                  <span key={item} className="text-xs px-2 py-1 rounded-full bg-osrs-gold/20 text-osrs-goldBright border border-osrs-gold/30 flex items-center gap-1">
+                    {item}
+                    <button type="button" onClick={() => toggleItem(item)} className="hover:text-red-400">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Item picker */}
+            {showItemPicker && (
+              <div className="bg-osrs-darker rounded-lg p-4 border border-osrs-brownLight max-h-96 overflow-y-auto">
+                <div className="relative mb-3">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stoner-haze/40" />
+                  <input
+                    type="text" value={itemSearch}
+                    onChange={e => setItemSearch(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 rounded-lg bg-osrs-dark border border-osrs-brownLight text-stoner-haze text-sm focus:border-osrs-gold focus:outline-none transition-colors"
+                    placeholder="Search items..."
+                    autoFocus
+                  />
+                </div>
+                {itemCategories.map(category => (
+                  <div key={category} className="mb-4">
+                    <h4 className="text-stoner-haze/50 text-xs uppercase tracking-wider mb-2">{category}</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {filteredItems.filter(i => i.category === category).map(item => {
+                        const selected = form.importantItems.includes(item.name)
+                        return (
+                          <button
+                            key={item.name}
+                            type="button"
+                            onClick={() => toggleItem(item.name)}
+                            className={`text-xs px-2.5 py-1.5 rounded-lg border transition-all ${
+                              selected
+                                ? 'bg-osrs-gold/30 border-osrs-gold text-osrs-goldBright'
+                                : 'bg-osrs-dark border-osrs-brownLight text-stoner-haze/70 hover:border-osrs-gold/50'
+                            }`}
+                          >
+                            {selected && '✓ '}{item.name}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ))}
+                {filteredItems.length === 0 && (
+                  <p className="text-stoner-haze/40 text-sm text-center py-4">No items found</p>
+                )}
+              </div>
+            )}
+          </div>
+
           {/* Skills grid */}
           <div>
             <div className="flex items-center gap-2 mb-3">
@@ -286,8 +422,25 @@ export default function Admin() {
               {accounts.map(acc => (
                 <div key={acc.id} className="card p-4 flex items-center justify-between">
                   <div className="flex-1">
-                    <h3 className="font-medieval text-osrs-goldBright">{acc.name}</h3>
-                    <p className="text-stoner-haze/50 text-sm">${acc.price} — Stock: {acc.stock}</p>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-medieval text-osrs-goldBright">{acc.name}</h3>
+                      {acc.banned && (
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">BANNED</span>
+                      )}
+                    </div>
+                    <p className="text-stoner-haze/50 text-sm">${acc.price} — Stock: {acc.stock} — QP: {acc.qp || 0} — Gold: {acc.gold_amount || '0'}</p>
+                    {acc.important_items && acc.important_items.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {acc.important_items.slice(0, 5).map(item => (
+                          <span key={item} className="text-xs px-1.5 py-0.5 rounded bg-osrs-gold/10 text-osrs-gold/70">
+                            {item}
+                          </span>
+                        ))}
+                        {acc.important_items.length > 5 && (
+                          <span className="text-xs px-1.5 py-0.5 text-stoner-haze/40">+{acc.important_items.length - 5} more</span>
+                        )}
+                      </div>
+                    )}
                     <div className="flex flex-wrap gap-1 mt-1">
                       {Object.entries(acc.skills || {}).filter(([,v]) => v > 0).slice(0, 6).map(([k, v]) => (
                         <span key={k} className="text-xs px-1.5 py-0.5 rounded bg-osrs-dark/60 text-stoner-haze/60">
