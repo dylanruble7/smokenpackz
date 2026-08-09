@@ -11,6 +11,7 @@ export default function Checkout() {
   const { user } = useAuth()
   const [step, setStep] = useState('details')
   const [selectedCrypto, setSelectedCrypto] = useState(null)
+  const [selectedPayment, setSelectedPayment] = useState(null)
   const [orderInfo, setOrderInfo] = useState({ email: '', discord: '', rsn: '' })
 
   useEffect(() => {
@@ -125,6 +126,27 @@ export default function Checkout() {
     if (pollRef.current) clearInterval(pollRef.current)
     clearCart()
     setStep('success')
+  }
+
+  const handleCashApp = () => {
+    setSelectedPayment('cashapp')
+    const newOrderId = generateOrderId()
+    setOrderId(newOrderId)
+    setStep('cashapp')
+  }
+
+  const handleOSRSGP = () => {
+    setSelectedPayment('osrsgp')
+    const newOrderId = generateOrderId()
+    setOrderId(newOrderId)
+    setStep('osrsgp')
+  }
+
+  const handleCard = () => {
+    setSelectedPayment('card')
+    const newOrderId = generateOrderId()
+    setOrderId(newOrderId)
+    setStep('card')
   }
 
   const statusConfig = {
@@ -242,13 +264,15 @@ export default function Checkout() {
           </form>
         )}
 
-        {/* Step: Payment - choose crypto */}
+        {/* Step: Payment - choose method */}
         {step === 'payment' && (
           <div className="space-y-6">
             <div className="card p-6">
               <h2 className="font-medieval text-xl text-osrs-goldBright mb-2">Choose Payment Method</h2>
-              <p className="text-stoner-haze/50 text-sm mb-6">Pay with crypto, CashApp, or OSRS GP. Crypto payments are auto-confirmed on the blockchain.</p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <p className="text-stoner-haze/50 text-sm mb-6">Pay with crypto, card, CashApp, or OSRS GP.</p>
+
+              {/* Crypto options */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 {cryptoOptions.map(crypto => (
                   <button
                     key={crypto.id}
@@ -264,17 +288,36 @@ export default function Checkout() {
                 ))}
               </div>
 
-              {/* Non-crypto payment options */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                {paymentMethods.filter(m => m.id !== 'crypto').map(method => (
-                  <div key={method.id} className="card p-6 text-center border border-osrs-brownLight">
-                    <div className="text-3xl mb-2">{method.icon}</div>
-                    <div className="font-medieval font-bold text-stoner-haze">{method.name}</div>
-                    <div className="text-stoner-haze/40 text-sm">{method.description}</div>
-                    <p className="text-stoner-haze/50 text-xs mt-2">Contact us on Discord to pay with {method.name}</p>
-                  </div>
-                ))}
+              {/* Card / CashApp / OSRS GP */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button
+                  onClick={handleCard}
+                  className="card p-6 text-center hover:scale-105 transition-transform border border-osrs-brownLight"
+                >
+                  <div className="text-4xl mb-2">💳</div>
+                  <div className="font-medieval font-bold text-stoner-haze">Credit / Debit</div>
+                  <div className="text-stoner-haze/40 text-sm">Visa, Mastercard, Amex</div>
+                </button>
+
+                <button
+                  onClick={handleCashApp}
+                  className="card p-6 text-center hover:scale-105 transition-transform border border-osrs-brownLight"
+                >
+                  <div className="text-4xl mb-2">$</div>
+                  <div className="font-medieval font-bold text-stoner-haze">CashApp</div>
+                  <div className="text-stoner-haze/40 text-sm">Send USD instantly</div>
+                </button>
+
+                <button
+                  onClick={handleOSRSGP}
+                  className="card p-6 text-center hover:scale-105 transition-transform border border-osrs-brownLight"
+                >
+                  <div className="text-4xl mb-2">🪙</div>
+                  <div className="font-medieval font-bold text-stoner-haze">OSRS GP</div>
+                  <div className="text-stoner-haze/40 text-sm">Pay with in-game gold</div>
+                </button>
               </div>
+
               {loading && (
                 <div className="text-center mt-4">
                   <Loader className="w-6 h-6 text-osrs-gold mx-auto animate-spin mb-2" />
@@ -288,7 +331,107 @@ export default function Checkout() {
                 <span className="text-osrs-gold">Total to Pay</span>
                 <span className="text-osrs-goldBright font-bold">${cartTotal}</span>
               </div>
-              <p className="text-stoner-haze/40 text-xs text-center">Powered by NOWPayments — auto-confirmed crypto payments</p>
+            </div>
+          </div>
+        )}
+
+        {/* Step: CashApp */}
+        {step === 'cashapp' && (
+          <div className="card p-8 max-w-lg mx-auto text-center">
+            <div className="text-5xl mb-3">$</div>
+            <h2 className="font-medieval text-2xl text-osrs-goldBright mb-2">Pay with CashApp</h2>
+            <p className="text-stoner-haze/50 text-sm mb-6">Order ID: <span className="font-bold text-osrs-gold">{orderId}</span></p>
+
+            <div className="bg-osrs-darker rounded-lg p-6 border border-osrs-brownLight space-y-4">
+              <div>
+                <p className="text-stoner-haze/50 text-sm mb-2">Send <span className="text-osrs-goldBright font-bold text-lg">${cartTotal}</span> to:</p>
+                <div className="flex items-center justify-center gap-2">
+                  <code className="px-4 py-3 rounded-lg bg-osrs-dark border border-osrs-brownLight text-osrs-goldBright text-xl font-bold">
+                    $SMOKENPACKZ
+                  </code>
+                  <button onClick={() => handleCopyAddress('$SMOKENPACKZ')} className="px-3 py-3 rounded-lg bg-osrs-brownLight hover:bg-osrs-brown transition-colors">
+                    {copied ? <Check className="w-5 h-5 text-stoner-greenBright" /> : <Copy className="w-5 h-5 text-stoner-haze" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex justify-center">
+                <div className="bg-white p-4 rounded-xl">
+                  <QRCodeSVG value="https://cash.app/$SMOKENPACKZ" size={180} bgColor="#ffffff" fgColor="#1a1410" level="M" />
+                </div>
+              </div>
+
+              <div className="bg-stoner-greenDeep/20 border border-stoner-green/30 rounded-lg p-3">
+                <p className="text-stoner-haze/70 text-sm">
+                  <strong className="text-stoner-greenBright">How it works:</strong> Scan the QR code or send manually to <strong className="text-osrs-goldBright">$SMOKENPACKZ</strong>.
+                  Include your order ID <strong className="text-osrs-gold">{orderId}</strong> in the note. Click "I've Paid" after sending.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button onClick={() => setStep('payment')} className="btn-secondary flex-1">Back</button>
+              <button onClick={handleComplete} className="btn-primary flex-1">I've Paid ✅</button>
+            </div>
+          </div>
+        )}
+
+        {/* Step: OSRS GP */}
+        {step === 'osrsgp' && (
+          <div className="card p-8 max-w-lg mx-auto text-center">
+            <div className="text-5xl mb-3">🪙</div>
+            <h2 className="font-medieval text-2xl text-osrs-goldBright mb-2">Pay with OSRS GP</h2>
+            <p className="text-stoner-haze/50 text-sm mb-6">Order ID: <span className="font-bold text-osrs-gold">{orderId}</span></p>
+
+            <div className="bg-osrs-darker rounded-lg p-6 border border-osrs-brownLight space-y-4">
+              <div className="bg-stoner-greenDeep/20 border border-stoner-green/30 rounded-lg p-4">
+                <p className="text-stoner-haze/70 text-sm mb-3">
+                  <strong className="text-stoner-greenBright">How it works:</strong> Place your order below, then join our Discord to arrange the GP trade.
+                  We'll meet in-game and trade the gold for your items. Easy and safe.
+                </p>
+              </div>
+
+              <div className="text-left bg-osrs-dark rounded-lg p-4 border border-osrs-brownLight">
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-stoner-haze/50">Order Total (USD)</span>
+                  <span className="text-osrs-goldBright font-bold">${cartTotal}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-stoner-haze/50">GP Rate</span>
+                  <span className="text-stoner-haze">We'll discuss the current rate in Discord</span>
+                </div>
+              </div>
+
+              <p className="text-stoner-haze/50 text-sm">
+                Your RSN: <span className="text-osrs-goldBright font-bold">{orderInfo.rsn || 'Not provided'}</span>
+              </p>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button onClick={() => setStep('payment')} className="btn-secondary flex-1">Back</button>
+              <button onClick={handleComplete} className="btn-primary flex-1">Place Order & Continue in Discord</button>
+            </div>
+          </div>
+        )}
+
+        {/* Step: Card */}
+        {step === 'card' && (
+          <div className="card p-8 max-w-lg mx-auto text-center">
+            <div className="text-5xl mb-3">💳</div>
+            <h2 className="font-medieval text-2xl text-osrs-goldBright mb-2">Credit / Debit Card</h2>
+            <p className="text-stoner-haze/50 text-sm mb-6">Order ID: <span className="font-bold text-osrs-gold">{orderId}</span></p>
+
+            <div className="bg-osrs-darker rounded-lg p-6 border border-osrs-brownLight space-y-4">
+              <div className="bg-stoner-greenDeep/20 border border-stoner-green/30 rounded-lg p-4">
+                <p className="text-stoner-haze/70 text-sm">
+                  <strong className="text-stoner-greenBright">Card payments coming soon!</strong> We're working on integrating direct card payments.
+                  For now, please use crypto, CashApp, or OSRS GP — or join our Discord and we'll sort it out.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button onClick={() => setStep('payment')} className="btn-secondary flex-1">Back to Payment Methods</button>
             </div>
           </div>
         )}
