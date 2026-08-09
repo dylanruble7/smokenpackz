@@ -8,7 +8,8 @@ const SKILL_LAYOUT = [
   ['Prayer', 'Crafting', 'Firemaking'],
   ['Magic', 'Fletching', 'Woodcutting'],
   ['Runecraft', 'Slayer', 'Farming'],
-  ['Hunter', 'Construction', null],
+  ['Hunter', 'Construction', null,
+  ],
 ]
 
 export default function SkillsPanel({ skills, size = 'md' }) {
@@ -16,76 +17,63 @@ export default function SkillsPanel({ skills, size = 'md' }) {
   if (!hasSkills) return null
 
   const sizeClasses = {
-    sm: { cell: 'w-12 h-12', icon: 'text-lg', num: 'text-[9px]', gap: 'gap-1', panel: 'p-2', label: 'text-[7px]' },
-    md: { cell: 'w-16 h-16', icon: 'text-2xl', num: 'text-xs', gap: 'gap-1.5', panel: 'p-3', label: 'text-[9px]' },
-    lg: { cell: 'w-24 h-24', icon: 'text-4xl', num: 'text-base', gap: 'gap-2', panel: 'p-4', label: 'text-xs' },
+    sm: { wrapper: 'w-full max-w-[220px]', num: 'text-[8px]', cover: 'w-[35%] h-[40%] bottom-[8%] right-[3%]' },
+    md: { wrapper: 'w-full max-w-[300px]', num: 'text-[10px]', cover: 'w-[35%] h-[40%] bottom-[8%] right-[3%]' },
+    lg: { wrapper: 'w-full max-w-[440px]', num: 'text-sm', cover: 'w-[35%] h-[40%] bottom-[8%] right-[3%]' },
   }
   const s = sizeClasses[size]
 
   return (
-    <div
-      className={`relative ${s.panel} rounded-lg border-2 border-amber-900/60 bg-gradient-to-b from-amber-950/80 to-stone-900/90 shadow-2xl`}
-      style={{
-        boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.6), 0 0 20px rgba(180,140,60,0.15)',
-      }}
-    >
-      {/* Animated glow overlay */}
-      <div
-        className="absolute inset-0 rounded-lg pointer-events-none opacity-30"
-        style={{
-          background: 'linear-gradient(180deg, transparent 0%, rgba(255,200,80,0.08) 50%, transparent 100%)',
-          animation: 'skillsShimmer 3s ease-in-out infinite',
-        }}
-      />
+    <div className={`relative ${s.wrapper} mx-auto rounded-lg overflow-hidden border-2 border-amber-900/60 shadow-2xl`}>
+      <img src="/osrs-skills-bg.jpeg" alt="Skills" className="w-full object-contain block" />
 
-      <div className={`grid grid-cols-3 ${s.gap} relative z-10`}>
+      {/* Grid overlay - covers 1/1 and shows typed numbers */}
+      <div className="absolute inset-0 grid grid-cols-3 grid-rows-8" style={{ padding: '1.5% 2%' }}>
         {SKILL_LAYOUT.flat().map((skillName, idx) => {
           if (!skillName) return <div key={idx} />
-          const skill = OSRS_SKILLS.find(sk => sk.name === skillName)
           const level = skills[skillName]
           return (
-            <div
-              key={idx}
-              className={`${s.cell} flex flex-col items-center justify-center rounded border border-amber-800/50 bg-gradient-to-b from-amber-900/40 to-stone-950/70 relative overflow-hidden transition-all duration-200 hover:from-amber-800/60 hover:to-stone-900/80 hover:border-amber-600/70 hover:scale-105 cursor-default`}
-              style={{
-                boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.5)',
-              }}
-            >
-              {/* Subtle moving glow per cell */}
+            <div key={idx} className="relative">
+              {/* Cover the 1/1 area with a box matching the panel background */}
               <div
-                className="absolute inset-0 pointer-events-none"
+                className={`absolute ${s.cover} rounded-sm`}
                 style={{
-                  background: 'radial-gradient(circle at 50% 50%, rgba(255,210,100,0.06) 0%, transparent 70%)',
-                  animation: `skillsPulse ${2 + (idx % 3)}s ease-in-out infinite`,
-                  animationDelay: `${idx * 0.15}s`,
+                  background: 'linear-gradient(135deg, #3d2b1f 0%, #2a1d14 100%)',
+                  boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.6)',
                 }}
               />
-              <span className={`${s.icon} relative z-10`} style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.8))' }}>
-                {skill?.icon || ''}
-              </span>
-              {level ? (
-                <span
-                  className={`${s.num} font-bold text-yellow-300 leading-none relative z-10 mt-0.5`}
-                  style={{ textShadow: '0 0 4px rgba(255,200,0,0.6), 0 1px 2px black' }}
+              {/* Show the typed level number */}
+              {level && (
+                <div
+                  className="absolute flex items-center justify-center"
+                  style={{ bottom: '8%', right: '3%', width: '35%', height: '40%' }}
                 >
-                  {level}
-                </span>
-              ) : (
-                <span className={`${s.num} text-amber-900/40 leading-none relative z-10 mt-0.5`}>—</span>
+                  <span
+                    className={`${s.num} font-bold text-yellow-300 leading-none`}
+                    style={{ textShadow: '0 0 3px black, 1px 1px 1px black' }}
+                  >
+                    {level}
+                  </span>
+                </div>
               )}
             </div>
           )
         })}
       </div>
 
+      {/* Animated shimmer overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-20"
+        style={{
+          background: 'linear-gradient(180deg, transparent 0%, rgba(255,200,80,0.15) 50%, transparent 100%)',
+          animation: 'skillsShimmer 4s ease-in-out infinite',
+        }}
+      />
+
       <style>{`
         @keyframes skillsShimmer {
           0%, 100% { transform: translateY(-100%); opacity: 0; }
-          50% { transform: translateY(100%); opacity: 0.3; }
-        }
-        @keyframes skillsPulse {
-          0%, 100% { opacity: 0.3; transform: scale(1); }
-          50% { opacity: 0.7; transform: scale(1.1); }
+          50% { transform: translateY(100%); opacity: 0.2; }
         }
       `}</style>
     </div>
