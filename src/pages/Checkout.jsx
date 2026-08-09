@@ -168,6 +168,10 @@ export default function Checkout() {
   }
 
   const handleGoToChat = () => {
+    localStorage.setItem('my_orders', JSON.stringify([
+      ...JSON.parse(localStorage.getItem('my_orders') || '[]'),
+      orderId,
+    ]))
     sendOrderNotification({
       orderId, paymentMethod: 'osrsgp',
       cartTotal, items: cart, rsn: orderInfo.rsn, email: orderInfo.email, user,
