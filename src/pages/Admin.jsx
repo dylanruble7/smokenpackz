@@ -380,10 +380,15 @@ export default function Admin() {
             </div>
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
               {OSRS_SKILLS.map(skill => (
-                <div key={skill.name} className="bg-osrs-darker rounded-lg p-2 border border-osrs-brownLight/50">
-                  <label className="text-stoner-haze/60 text-xs flex items-center gap-1 mb-1">
-                    <span>{skill.icon}</span> {skill.short}
-                  </label>
+                <div key={skill.name} className="bg-osrs-darker rounded-lg p-2 border border-osrs-brownLight/50 flex flex-col items-center">
+                  <img
+                    src={skill.iconUrl}
+                    alt={skill.name}
+                    className="w-6 h-6 object-contain mb-1"
+                    style={{ imageRendering: 'pixelated' }}
+                    loading="lazy"
+                  />
+                  <label className="text-stoner-haze/60 text-xs mb-1">{skill.short}</label>
                   <input
                     type="number" min="1" max="99"
                     value={form.skills[skill.name]}
