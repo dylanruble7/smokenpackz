@@ -17,8 +17,8 @@ export default function Home() {
         <div className="absolute bottom-20 left-1/4 text-5xl animate-float opacity-20" style={{ animationDelay: '2s' }}>🌿</div>
 
         <div className="relative z-10 text-center px-4 max-w-3xl">
-          <div className="mb-6 flex justify-center">
-            <img src="/packzlogo.png" alt="SmokenPackz" className="w-64 h-64 object-contain animate-float" />
+          <div className="mb-4 flex justify-center">
+            <img src="/packzlogo.png" alt="SmokenPackz" className="w-96 h-96 object-contain animate-float" />
           </div>
           <h1 className="font-medieval text-5xl md:text-7xl font-black text-osrs-goldBright mb-4 drop-shadow-[0_0_20px_rgba(201,162,39,0.5)]">
             SmokenPackz
