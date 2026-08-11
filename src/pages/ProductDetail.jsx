@@ -177,7 +177,10 @@ export default function ProductDetail() {
                     if (!level) return null
                     return (
                       <div key={skill.name} className="flex items-center justify-between text-sm bg-osrs-darker/60 rounded px-2 py-1">
-                        <span className="text-stoner-haze/60 flex items-center gap-1">{skill.icon} {skill.short}</span>
+                        <span className="text-stoner-haze/60 flex items-center gap-1">
+                          <img src={skill.iconUrl} alt={skill.name} className="w-4 h-4 object-contain" style={{ imageRendering: 'pixelated' }} loading="lazy" />
+                          {skill.short}
+                        </span>
                         <span className="text-osrs-goldBright font-bold">{level}</span>
                       </div>
                     )
@@ -200,7 +203,7 @@ export default function ProductDetail() {
                   </div>
                   <div className="text-center bg-osrs-darker/60 rounded-lg p-3">
                     <div className="flex items-center justify-center gap-1.5 mb-1">
-                      <img src="https://oldschool.runescape.wiki/images/Coins_icon.png" alt="Gold" className="w-5 h-5 object-contain" style={{ imageRendering: 'pixelated' }} loading="lazy" />
+                      <img src="https://oldschool.runescape.wiki/images/Coins_detail.png" alt="Gold" className="w-5 h-5 object-contain" style={{ imageRendering: 'pixelated' }} loading="lazy" />
                       <p className="text-stoner-haze/50 text-xs">Gold on Acc</p>
                     </div>
                     <p className="font-medieval text-xl font-bold text-osrs-goldBright">{p.goldAmount || '0'}</p>

@@ -281,10 +281,7 @@ export default function Admin() {
               />
             </div>
             <div>
-              <label className="block text-stoner-haze/70 text-sm mb-1 flex items-center gap-1.5">
-                <img src="https://oldschool.runescape.wiki/images/Coins_icon.png" alt="Gold" className="w-4 h-4 object-contain" style={{ imageRendering: 'pixelated' }} loading="lazy" />
-                Gold on Account
-              </label>
+              <label className="block text-stoner-haze/70 text-sm mb-1">Gold on Account</label>
               <input
                 type="text" value={form.goldAmount}
                 onChange={e => setForm({ ...form, goldAmount: e.target.value })}
@@ -468,7 +465,6 @@ export default function Admin() {
                     <p className="text-stoner-haze/50 text-sm flex items-center gap-1 flex-wrap">
                       ${acc.price} — Stock: {acc.stock} —
                       <img src="https://oldschool.runescape.wiki/images/Quest_point_icon.png" alt="QP" className="w-3 h-3 object-contain inline" style={{ imageRendering: 'pixelated' }} loading="lazy" />
-                      <img src="https://oldschool.runescape.wiki/images/Coins_icon.png" alt="Gold" className="w-3 h-3 object-contain inline" style={{ imageRendering: 'pixelated' }} loading="lazy" />
                       {acc.qp || 0} — Gold: {acc.gold_amount || '0'} — {acc.login_type === 'jagex' ? 'Jagex' : 'Legacy'}
                     </p>
                     {acc.important_items && acc.important_items.length > 0 && (
