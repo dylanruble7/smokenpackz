@@ -192,7 +192,10 @@ export default function ProductDetail() {
                 <h3 className="font-medieval text-osrs-gold mb-3 text-sm">Account Info</h3>
                 <div className="grid grid-cols-3 gap-3">
                   <div className="text-center bg-osrs-darker/60 rounded-lg p-3">
-                    <p className="text-stoner-haze/50 text-xs mb-1">Quest Points</p>
+                    <div className="flex items-center justify-center gap-1.5 mb-1">
+                      <img src="https://oldschool.runescape.wiki/images/Quest_point_icon.png" alt="QP" className="w-5 h-5 object-contain" style={{ imageRendering: 'pixelated' }} loading="lazy" />
+                      <p className="text-stoner-haze/50 text-xs">Quest Points</p>
+                    </div>
                     <p className="font-medieval text-xl font-bold text-osrs-goldBright">{p.qp || 0}</p>
                   </div>
                   <div className="text-center bg-osrs-darker/60 rounded-lg p-3">
