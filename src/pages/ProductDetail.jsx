@@ -199,7 +199,10 @@ export default function ProductDetail() {
                     <p className="font-medieval text-xl font-bold text-osrs-goldBright">{p.qp || 0}</p>
                   </div>
                   <div className="text-center bg-osrs-darker/60 rounded-lg p-3">
-                    <p className="text-stoner-haze/50 text-xs mb-1">Gold on Acc</p>
+                    <div className="flex items-center justify-center gap-1.5 mb-1">
+                      <img src="https://oldschool.runescape.wiki/images/Coins_icon.png" alt="Gold" className="w-5 h-5 object-contain" style={{ imageRendering: 'pixelated' }} loading="lazy" />
+                      <p className="text-stoner-haze/50 text-xs">Gold on Acc</p>
+                    </div>
                     <p className="font-medieval text-xl font-bold text-osrs-goldBright">{p.goldAmount || '0'}</p>
                   </div>
                   <div className="text-center bg-osrs-darker/60 rounded-lg p-3">
