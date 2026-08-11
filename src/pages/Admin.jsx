@@ -269,7 +269,10 @@ export default function Admin() {
           {/* QP, Gold, Banned */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-stoner-haze/70 text-sm mb-1">Quest Points</label>
+              <label className="block text-stoner-haze/70 text-sm mb-1 flex items-center gap-1.5">
+                <img src="https://oldschool.runescape.wiki/images/Quest_point_icon.png" alt="QP" className="w-4 h-4 object-contain" style={{ imageRendering: 'pixelated' }} loading="lazy" />
+                Quest Points
+              </label>
               <input
                 type="number" min="0" max="300" value={form.qp}
                 onChange={e => setForm({ ...form, qp: e.target.value })}
@@ -459,7 +462,11 @@ export default function Admin() {
                         {acc.login_type === 'jagex' ? 'Jagex Login' : 'Legacy Login'}
                       </span>
                     </div>
-                    <p className="text-stoner-haze/50 text-sm">${acc.price} — Stock: {acc.stock} — QP: {acc.qp || 0} — Gold: {acc.gold_amount || '0'}</p>
+                    <p className="text-stoner-haze/50 text-sm flex items-center gap-1 flex-wrap">
+                      ${acc.price} — Stock: {acc.stock} —
+                      <img src="https://oldschool.runescape.wiki/images/Quest_point_icon.png" alt="QP" className="w-3 h-3 object-contain inline" style={{ imageRendering: 'pixelated' }} loading="lazy" />
+                      {acc.qp || 0} — Gold: {acc.gold_amount || '0'} — {acc.login_type === 'jagex' ? 'Jagex' : 'Legacy'}
+                    </p>
                     {acc.important_items && acc.important_items.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-1">
                         {acc.important_items.slice(0, 5).map(item => (
