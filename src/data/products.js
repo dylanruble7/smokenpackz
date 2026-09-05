@@ -41,7 +41,7 @@ export const products = [
 ]
 
 export const cryptoOptions = [
-  { id: 'btc', name: 'Bitcoin', symbol: 'BTC', icon: '₿', address: 'YOUR_BTC_ADDRESS', color: '#f7931a' },
+  { id: 'btc', name: 'Bitcoin', symbol: 'BTC', icon: '₿', address: import.meta.env.VITE_BTC_ADDRESS || '', color: '#f7931a' },
   { id: 'ltc', name: 'Litecoin', symbol: 'LTC', icon: 'Ł', address: 'YOUR_LTC_WALLET_ADDRESS', color: '#345d9d' },
   { id: 'eth', name: 'Ethereum', symbol: 'ETH', icon: 'Ξ', address: 'YOUR_ETH_WALLET_ADDRESS', color: '#627eea' },
   { id: 'usdt', name: 'Tether', symbol: 'USDT', icon: '₮', address: 'YOUR_USDT_WALLET_ADDRESS', color: '#26a17b' },
